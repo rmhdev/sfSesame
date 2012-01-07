@@ -40,3 +40,15 @@ all:
     param:
       cache_key_use_vary_headers: true
       cache_key_use_host_name:    true
+
+  user:
+    default_culture:  es
+    class: myUserFrontend
+    param:
+      timeout:         3600
+      default_culture: es
+
+  storage:
+    class: sfSessionStorage
+    param:
+      session_name: rmhdev_sfsesame_frontend
