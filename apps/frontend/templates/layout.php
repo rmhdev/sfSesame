@@ -1,14 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <?php include_http_metas() ?>
-    <?php include_metas() ?>
-    <?php include_title() ?>
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <?php include_stylesheets() ?>
-    <?php include_javascripts() ?>
-  </head>
-  <body>
-    <?php echo $sf_content ?>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>sfSesame</title>
+        <meta name="description" content="">
+        <meta name="author" content="Rober Martín H">
+
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <?php include_title() ?>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <?php echo stylesheet_tag('bootstrap.min.css'); ?>
+        <?php echo stylesheet_tag('main.css'); ?>
+    </head>
+
+    <body>
+        <div class="topbar">
+            <div class="fill">
+                <div class="container">
+                    <a class="brand" href="#">sfSesame</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="content">
+<?php echo $sf_content ?>
+            </div>
+
+            <footer>
+                <p>Footer info</p>
+            </footer>
+        </div>
+    </body>
 </html>
