@@ -1,3 +1,10 @@
+# Folders #
+###########
+cache/*
+log/*
+web/uploads/*
+config/databases.yml
+
 # Logs and databases #
 ######################
 *.log
