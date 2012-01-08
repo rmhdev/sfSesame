@@ -4,7 +4,24 @@
 all:
   doctrine:
     class: sfDoctrineDatabase
+
+dev:
+  doctrine:
     param:
       dsn:      mysql:host=localhost;dbname=sfSesame
-      username: root
-      password: 
+      username: usrsfsesame
+      password: Zrs23nTCPP7BamWQ
+
+test:
+  doctrine:
+    param:
+      dsn:      mysql:host=localhost;dbname=test_sfSesame
+      username: tstsfsesame
+      password: Bv8eKYXHE6BvnhWu
+
+prod:
+  doctrine:
+    param:
+      dsn:      mysql:host=localhost;dbname=sfSesame
+      username: usrsfsesame
+      password: Zrs23nTCPP7BamWQ

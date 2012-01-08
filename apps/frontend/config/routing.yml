@@ -6,6 +6,16 @@ homepage:
   url:   /
   param: { module: default, action: index }
 
+company:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                Company
+    module:               company
+    prefix_path:          /company
+    column:               id
+    with_wildcard_routes: true
+    with_show:            true
+
 # generic rules
 # please, remove them by adding more specific rules
 default_index:
