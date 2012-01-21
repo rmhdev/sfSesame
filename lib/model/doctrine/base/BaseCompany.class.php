@@ -23,6 +23,7 @@ abstract class BaseCompany extends sfDoctrineRecord
         $this->hasColumn('name', 'string', 150, array(
              'type' => 'string',
              'notnull' => true,
+             'unique' => true,
              'length' => 150,
              ));
     }

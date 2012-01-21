@@ -28,6 +28,10 @@ abstract class BaseCompanyForm extends BaseFormDoctrine
       'updated_at' => new sfValidatorDateTime(),
     ));
 
+    $this->validatorSchema->setPostValidator(
+      new sfValidatorDoctrineUnique(array('model' => 'Company', 'column' => array('name')))
+    );
+
     $this->widgetSchema->setNameFormat('company[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

@@ -2,4 +2,4 @@ Company:
   actAs:
     Timestampable:  ~
   columns:
-    name:     { type: string(150), notnull: true }
+    name:     { type: string(150), notnull: true, unique: true }
