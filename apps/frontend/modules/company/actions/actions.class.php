@@ -50,7 +50,11 @@ class companyActions extends sfActions {
                 $this->getUser()->setFlash('error', $e->getMessage());
                 return sfView::SUCCESS;
             }
-            $this->redirect(array('sf_route' => 'company_edit', 'sf_subject' => $company));
+            if ($request->hasParameter('save_and_add')){
+                $this->redirect('company/new');
+            } else {
+                $this->redirect(array('sf_route' => 'company_edit', 'sf_subject' => $company));
+            }
         } else {
             //
         }

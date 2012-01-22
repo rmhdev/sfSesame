@@ -125,3 +125,23 @@ $browser->
         isStatusCode(200)->
     end()
 ;
+
+$browser->
+    info('11. Add button for save and add')->
+    info('11.a. Existing company')->
+    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    click('button_save_and_add', $browser->getDataFormWithName("My company"))->
+    followRedirect()->
+        with('request')->begin()->
+            isParameter('module', 'company')->
+            isParameter('action', 'new')->
+    end()->
+    info('11.b. New company')->
+    get(sprintf('/company/new', $company->getPrimaryKey()))->
+    click('button_save_and_add', $browser->getDataFormWithName("Testing my company"))->
+    followRedirect()->
+        with('request')->begin()->
+            isParameter('module', 'company')->
+            isParameter('action', 'new')->
+    end()
+;
