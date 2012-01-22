@@ -145,3 +145,15 @@ $browser->
             isParameter('action', 'new')->
     end()
 ;
+
+$browser->
+    info('12. Edit button in the show action')->
+    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    click('Edit')->
+        with('request')->begin()->
+            isParameter('module', 'company')->
+            isParameter('action', 'edit')->
+            isParameter('id', $company->getPrimaryKey())->
+    end()
+;
+
