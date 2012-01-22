@@ -15,10 +15,12 @@ class companyActions extends sfActions {
 
     public function executeNew(sfWebRequest $request) {
         $this->form = $this->getForm();
+        $this->company = $this->form->getObject();
     }
 
     public function executeCreate(sfWebRequest $request){
         $this->form = $this->getForm();
+        $this->company = $this->form->getObject();
         $this->processForm($request, $this->form);
         $this->setTemplate('edit');
     }

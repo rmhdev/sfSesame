@@ -2,7 +2,7 @@
 
 include(dirname(__FILE__).'/../../bootstrap/functional.php');
 
-$browser = new sfTestFunctional(new sfBrowser());
+$browser = new CompanyTestFunctional(new sfBrowser());
 $browser->setTester('doctrine', 'sfTesterDoctrine');
 
 $browser->
@@ -29,7 +29,7 @@ $dataEmpty = array(
 );
 
 $browser->
-    info("2. The required fields can't be empty " )->
+    info("2. The required fields can't be empty" )->
     get('/company/new')->
     click('button_create', $dataEmpty)->
       with('form')->begin()->
@@ -41,7 +41,7 @@ $browser->
 $dataNameLength1 = $dataEmpty;
 $dataNameLength1['company']['name'] = 'a';
 $browser->
-    info("3. The lenght of the name can't be less than 3")->
+    info("3. A name with less than 3 can't be saved")->
     get('/company/new')->
     click('button_create', $dataNameLength1)->
         with('form')->begin()->
@@ -54,7 +54,7 @@ $browser->
 $dataNameLength51 = $dataEmpty;
 $dataNameLength51['company']['name'] = str_repeat('abcde', 10) . "z";
 $browser->
-    info("4. The length of the name must be 50 or less")->
+    info("4. A name greater than 50 can't be saved")->
     get('/company/new')->
     click('button_create', $dataNameLength51)->
         with('form')->begin()->
@@ -66,12 +66,18 @@ $browser->
 $dataNameLength3 = $dataEmpty;
 $dataNameLength3['company']['name'] = 'Company Inc';
 $browser->
-    info("5. The length of the name must be between 3 and 50")->
+    info("5. A name with length between 3 and 50 is correct")->
     get('/company/new')->
     click('button_create', $dataNameLength3)->
         with('form')->begin()->
             hasErrors(false)->
+    end()->
+    info('5 a. After create, redirect to edit')->
     followRedirect()->
+        with('request')->begin()->
+            isParameter('module', 'company')->
+            isParameter('action', 'edit')->
+            isParameter('id', $browser->findOneByName('Company Inc')->getPrimaryKey())->
     end()
 ;
 
@@ -98,7 +104,7 @@ $browser->
     end()
 ;
 
-$company = retrieveCompanyByName('My company');
+$company = $browser->findOneByName('My company');
 $browser->
     info('8. Display the edit form')->
     get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
@@ -106,7 +112,6 @@ $browser->
         isParameter('module', 'company')->
         isParameter('action', 'edit')->
       end()->
-
       with('response')->begin()->
         isStatusCode(200)->
     end()
@@ -122,8 +127,3 @@ $browser->
         hasErrors(false)->
     end()
 ;
-
-
-function retrieveCompanyByName($name){
-    return CompanyTable::getInstance()->findOneByName($name);
-}
