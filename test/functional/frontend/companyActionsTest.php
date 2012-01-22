@@ -8,7 +8,6 @@ $browser->setTester('doctrine', 'sfTesterDoctrine');
 $browser->
   info('1. Display the create company form')->
   get('/company/new')->
-
   with('request')->begin()->
     isParameter('module', 'company')->
     isParameter('action', 'new')->
@@ -19,31 +18,21 @@ $browser->
   end()
 ;
 
-$dataEmpty = array(
-    'company' => array(
-        'name'  => ''
-    ),
-    array(
-      '_with_csrf' => true
-    )
-);
-
 $browser->
     info("2. The required fields can't be empty" )->
     get('/company/new')->
-    click('button_create', $dataEmpty)->
+    click('button_create', $browser->getDataForEmptyForm())->
       with('form')->begin()->
         hasErrors(1)->
         isError('name', 'required')->
     end()
 ;
 
-$dataNameLength1 = $dataEmpty;
-$dataNameLength1['company']['name'] = 'a';
+
 $browser->
     info("3. A name with less than 3 can't be saved")->
     get('/company/new')->
-    click('button_create', $dataNameLength1)->
+    click('button_create', $browser->getDataFormWithName('a'))->
         with('form')->begin()->
             hasErrors(1)->
             isError('name', 'min_length')->
@@ -51,24 +40,21 @@ $browser->
     end()
 ;
 
-$dataNameLength51 = $dataEmpty;
-$dataNameLength51['company']['name'] = str_repeat('abcde', 10) . "z";
+$longName = str_repeat('abcde', 10) . "z";
 $browser->
     info("4. A name greater than 50 can't be saved")->
     get('/company/new')->
-    click('button_create', $dataNameLength51)->
+    click('button_create', $browser->getDataFormWithName($longName))->
         with('form')->begin()->
             hasErrors(1)->
             isError('name', 'max_length')->
     end()
 ;
 
-$dataNameLength3 = $dataEmpty;
-$dataNameLength3['company']['name'] = 'Company Inc';
 $browser->
     info("5. A name with length between 3 and 50 is correct")->
     get('/company/new')->
-    click('button_create', $dataNameLength3)->
+    click('button_create', $browser->getDataFormWithName('Company Inc'))->
         with('form')->begin()->
             hasErrors(false)->
     end()->
@@ -81,12 +67,10 @@ $browser->
     end()
 ;
 
-$dataNameCorrect = $dataEmpty;
-$dataNameCorrect['company']['name'] = 'My company';
 $browser->
     info("6. The created company must be in the BD")->
     get('/company/new')->
-    click('button_create', $dataNameCorrect)->
+    click('button_create', $browser->getDataFormWithName('My company'))->
         with('doctrine')->begin()->
         check('Company', array(
             'name' => 'My company'
@@ -97,7 +81,7 @@ $browser->
 $browser->
     info("7. Names of companies can't be duplicated")->
     get('/company/new')->
-    click('button_create', $dataNameCorrect)->
+    click('button_create', $browser->getDataFormWithName('My company'))->
         with('form')->begin()->
             hasErrors(1)->
             isError('name', 'invalid')->
@@ -117,12 +101,10 @@ $browser->
     end()
 ;
 
-$dataNameUpdate = $dataEmpty;
-$dataNameUpdate['company']['name'] = 'My company edited';
 $browser->
     info('9. Edit an existing company')->
     get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
-    click('button_update', $dataNameUpdate)->
+    click('button_update', $browser->getDataFormWithName('My company edited'))->
     with('form')->begin()->
         hasErrors(false)->
     end()
