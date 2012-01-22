@@ -98,3 +98,32 @@ $browser->
     end()
 ;
 
+$company = retrieveCompanyByName('My company');
+$browser->
+    info('8. Display the edit form')->
+    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'edit')->
+      end()->
+
+      with('response')->begin()->
+        isStatusCode(200)->
+    end()
+;
+
+$dataNameUpdate = $dataEmpty;
+$dataNameUpdate['company']['name'] = 'My company edited';
+$browser->
+    info('9. Edit an existing company')->
+    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    click('button_update', $dataNameUpdate)->
+    with('form')->begin()->
+        hasErrors(false)->
+    end()
+;
+
+
+function retrieveCompanyByName($name){
+    return CompanyTable::getInstance()->findOneByName($name);
+}

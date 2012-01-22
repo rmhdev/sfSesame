@@ -14,23 +14,43 @@ class companyActions extends sfActions {
     }
 
     public function executeNew(sfWebRequest $request) {
-        $this->form = new CompanyForm();
+        $this->form = $this->getForm();
     }
 
     public function executeCreate(sfWebRequest $request){
-        $this->form = new CompanyForm();
+        $this->form = $this->getForm();
+        $this->processForm($request, $this->form);
+        $this->setTemplate('edit');
+    }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
-        if ($this->form->isValid()){
+    public function executeEdit(sfWebRequest $request){
+        $this->company = $this->getRoute()->getObject();
+        $this->form = $this->getForm($this->company);
+    }
+
+    public function executeUpdate(sfWebRequest $request){
+        $this->company = $this->getRoute()->getObject();
+        $this->form = $this->getForm($this->company);
+        $this->processForm($request, $this->form);
+        $this->setTemplate('edit');
+    }
+
+    protected function getForm($company = null){
+        return new CompanyForm($company);
+    }
+
+    protected function processForm(sfWebRequest $request, CompanyForm $form){
+        $form->bind($request->getParameter($form->getName()));
+        if ($form->isValid()){
             try {
-                $company = $this->form->save();
+                $company = $form->save();
             } catch (Doctrine_Validator_Exception $e){
                 $this->getUser()->setFlash('error', $e->getMessage());
                 return sfView::SUCCESS;
             }
             $this->redirect(array('sf_route' => 'company_edit', 'sf_subject' => $company));
         } else {
-            $this->setTemplate('new');
+            //
         }
     }
 
