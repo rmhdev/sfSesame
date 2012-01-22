@@ -2,6 +2,10 @@
 
 class CompanyTestFunctional extends sfTestFunctional {
 
+    /**
+     * @param string $name
+     * @return Company
+     */
     public function findOneByName($name){
         return CompanyTable::getInstance()->findOneByName($name);
     }

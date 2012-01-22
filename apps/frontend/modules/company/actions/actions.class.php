@@ -56,4 +56,8 @@ class companyActions extends sfActions {
         }
     }
 
+    public function executeShow(sfWebRequest $request){
+        $this->company = $this->getRoute()->getObject();
+    }
+
 }

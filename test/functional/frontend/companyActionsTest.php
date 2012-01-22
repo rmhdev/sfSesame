@@ -102,10 +102,26 @@ $browser->
 ;
 
 $browser->
-    info('9. Edit an existing company')->
+    info('9. Edit a company')->
     get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
     click('button_update', $browser->getDataFormWithName('My company edited'))->
     with('form')->begin()->
         hasErrors(false)->
+    end()->
+
+    info('9.1. Edit an unexisting company must redirect to 404')->
+    get(sprintf('/company/%d/edit', 0))->
+    with('response')->isStatusCode(404)
+;
+
+$browser->
+    info('10. Show a company')->
+    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'show')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
     end()
 ;
