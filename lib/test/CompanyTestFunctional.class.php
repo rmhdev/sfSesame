@@ -39,5 +39,13 @@ class CompanyTestFunctional extends sfTestFunctional {
         $company->save();
         return $company;
     }
+    
+    public function createAndSaveMultipleCompanies($count){
+        for($i = 1; $i<= $count; $i++){
+            $company = new Company();
+            $company->setName("Auto company {$i}");
+            $company->save();
+        }
+    }
 
 }

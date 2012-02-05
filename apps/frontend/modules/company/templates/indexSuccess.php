@@ -10,9 +10,16 @@
     </div>
     <?php else : ?>
     <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
         <?php foreach ($pager->getResults() as $company) : ?>
         <tbody>
             <tr>
+                <td><?php echo $company->getPrimaryKey(); ?></td>
                 <td><?php echo link_to($company->getName(), url_for('company_show', $company)); ?></td>
             </tr>
         </tbody>

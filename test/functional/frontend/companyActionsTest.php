@@ -161,7 +161,6 @@ $browser->
  * - List action must retrieve 200 code.
  * - With no companys in the BD, a message must me shown.
  * - With 1 company in the BD, the table must be shown (header, footer).
- * - With 1 company in the BD, that company must be shown (correct columns).
  * - With 1 company in the BD, a link to company/show must exist (in the tr element).
  * - The limit of elements per page is 20, so with 21 there must be only 20 elements and a  pager menu.
  * - The links of the pager menu must behave correctly.
@@ -202,9 +201,40 @@ $browser->
         checkElement('.content:contains("No items in the list")', false)->
         info('15.2. The table exists')->
         checkElement('.content table', true)->
-        info('15.3. A link with the name of the company to show the company')->
+        info('15.3. Show the ID of the company')->
+        checkElement(sprintf('.content table tbody tr:first td:first:contains(%d)', $company->getPrimaryKey()))->
+        info('15.4. A link with the name of the company to show the company')->
         checkElement(sprintf('.content table tbody tr:first a:contains("%s")]', $company->getName()))->
         checkElement(sprintf('.content table tbody tr:first a[href]:contains("/company/%d")]', $company->getId()))->
-        info('15.4 ')->
+        info('15.5. Every column has its name in the header of the table')->
+        checkElement('.content table thead tr:first th', true, array('count' => 2))->
+        checkElement('.content table thead tr:first th:nth-child(1):contains("Id")')->
+        checkElement('.content table thead tr:first th:nth-child(2):contains("Name")')->
     end()
 ;
+
+$browser->createAndSaveMultipleCompanies(10);
+
+$browser->
+    info('16. The list can be paginated')->
+    info('16.1. The list shows a max number of companies per page')->
+    get('company')->
+    with('response')->begin()->
+        info('16.2. With 11 elements, show only 10')->
+        checkElement('.content table tbody tr', true, array('count' => 10))->
+    end()->
+    info('16.3. In the second page there must be one company only')->
+    get('company?page=2')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+        isParameter('page', 2)->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
+        checkElement('.content table tbody tr', true, array('count' => 1))->
+    end()
+;
+
+// test links to pages.
+        
