@@ -157,3 +157,54 @@ $browser->
     end()
 ;
 
+/* Next tests:
+ * - List action must retrieve 200 code.
+ * - With no companys in the BD, a message must me shown.
+ * - With 1 company in the BD, the table must be shown (header, footer).
+ * - With 1 company in the BD, that company must be shown (correct columns).
+ * - With 1 company in the BD, a link to company/show must exist (in the tr element).
+ * - The limit of elements per page is 20, so with 21 there must be only 20 elements and a  pager menu.
+ * - The links of the pager menu must behave correctly.
+ * - List can be sorted (asc, desc) by all the columns.
+ * - 
+*/
+
+$browser->
+    info('13. Display the list')->
+    get('company')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
+    end()
+;
+
+$browser->deleteAll();
+
+$browser->
+    info('14. The empty list must display a message')->
+    get('company')->
+    with('response')->begin()->
+        isStatusCode(200)->
+        checkElement('.content:contains("No items in the list")', true)->
+    end()
+;
+
+$company = $browser->createAndSaveNewCompany("New company 1");
+
+$browser->
+    info('15. With companys to show, the table must be shown')->
+    get('company')->
+    with('response')->begin()->
+        info('15.1. Dont show the message for empty lists')->
+        checkElement('.content:contains("No items in the list")', false)->
+        info('15.2. The table exists')->
+        checkElement('.content table', true)->
+        info('15.3. A link with the name of the company to show the company')->
+        checkElement(sprintf('.content table tbody tr:first a:contains("%s")]', $company->getName()))->
+        checkElement(sprintf('.content table tbody tr:first a[href]:contains("/company/%d")]', $company->getId()))->
+        info('15.4 ')->
+    end()
+;

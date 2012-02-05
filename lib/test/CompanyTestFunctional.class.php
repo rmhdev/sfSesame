@@ -27,4 +27,17 @@ class CompanyTestFunctional extends sfTestFunctional {
         return $data;
     }
 
+    public function deleteAll(){
+        foreach (Doctrine::getTable('Company')->findAll() as $company){
+            $company->delete();
+        }
+    }
+
+    public function createAndSaveNewCompany($name){
+        $company = new Company();
+        $company->setName($name);
+        $company->save();
+        return $company;
+    }
+
 }
