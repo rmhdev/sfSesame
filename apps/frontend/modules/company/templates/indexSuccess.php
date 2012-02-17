@@ -9,6 +9,17 @@
         <p><strong>No items in the list</strong> </p>
     </div>
     <?php else : ?>
+    
+    <div class="pagination">
+        <ul>
+            <li class="prev disabled"><a href="#">Previous</a></li>
+            <li class="active"><?php echo link_to(1, url_for('@company?page=1')); ?></li>
+            <li class=""><?php echo link_to(2, url_for('@company?page=2')); ?></li>
+            <li class=""><?php echo link_to("Next", url_for('@company?page=2')); ?></li>
+        </ul>
+    </div>
+    
+    
     <table cellspacing="0">
         <thead>
             <tr>
