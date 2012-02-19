@@ -254,8 +254,11 @@ $browser->
             checkElement('.content .pagination ul li:nth-child(3):contains("2")')->
             checkElement('.content .pagination ul li:nth-child(3) a[href*="page=2"]')->
         info('17.1.4. Link to next page')->
-            checkElement('.content .pagination ul li:nth-child(4):contains("Next")')->
-            checkElement('.content .pagination ul li:nth-child(4) a[href*="page=2"]')->
+            checkElement('.content .pagination ul li.next:contains("Next")')->
+            checkElement('.content .pagination ul li.next a[href*="page=2"]')->
+        info('17.1.5. Information about actual/total pages')->
+            checkElement('.content table tfoot tr td', "#Page 1/2#")->
+            checkElement('.content table tfoot tr td', "#11 results#")->
     end()->
         info('17.2 Go to next page')->
         info('17.2.1 Click on page 2')->
@@ -278,6 +281,12 @@ $browser->
             info('17.2.4. Link to the second page must be active')->
                 checkElement('.content .pagination ul li.active:contains("2")')->
                 checkElement('.content .pagination ul li.active a[href*="page=2"]')->
+            info('17.2.5 Link to the next page is unactive')->
+                checkElement('.content .pagination ul li.next a[href="#"]')->
+                checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
+            info('17.2.6. Information about actual/total pages')->
+                checkElement('.content table tfoot tr td', "#Page 2/2#")->
+                //checkElement('.content table tfoot tr td', "#11 results#")->
     end()
 ;
 
