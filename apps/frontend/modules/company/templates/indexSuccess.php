@@ -6,23 +6,15 @@
     
     <h1>Companies</h1>
 
-    <?php if (!$pager->getNbResults()) : ?>
+<?php if (!$pager->getNbResults()) : ?>
     <div class="alert-message block-message warning">
         <p><strong>No items in the list</strong> </p>
     </div>
-    <?php else : ?>
+<?php else : ?>
     
     <?php if ($pager->haveToPaginate()) : ?>
-    <div class="pagination">
-        <ul>
-            <li class="prev <?php echo ($pager->isFirstPage()) ? "disabled" : ""; ?>"><a href="<?php echo ($pager->isFirstPage()) ? "#" : url_for('@company?page=1'); ?>">Previous</a></li>
-            <li class="<?php echo ($pager->getPage() == 1) ? "active" : ""; ?>"><?php echo link_to(1, url_for('@company?page=1')); ?></li>
-            <li class="<?php echo ($pager->getPage() == 2) ? "active" : ""; ?>"><?php echo link_to(2, url_for('@company?page=2')); ?></li>
-            <li class="next <?php echo $pager->isLastPage() ? "disabled" : ""?>"><a href="<?php echo ($pager->isLastPage() ? "#" : url_for('@company?page=2')); ?>">Next</a></li>
-        </ul>
-    </div>
+    <?php echo sesame_render_pager($pager, '@company'); ?>
     <?php endif; ?>
-    
     
     <table cellspacing="0">
         <thead>
@@ -33,7 +25,7 @@
         </thead>
         <tfoot>
             <tr>
-                <td colspan="2"><span>11 results</span> Page <?php echo sprintf("%d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
+                <td colspan="2"><span><?php echo $pager->getNbResults(); ?> results</span> Page <?php echo sprintf("%d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
             </tr>
         </tfoot>
         <?php foreach ($pager->getResults() as $company) : ?>
@@ -45,6 +37,6 @@
         </tbody>
         <?php endforeach; ?>
     </table>
-    <?php endif; ?>
+<?php endif; ?>
 
 </div>
