@@ -177,6 +177,7 @@ $browser->
     end()->
     with('response')->begin()->
         isStatusCode(200)->
+        checkElement('.content h1', 'Companies')->
     end()
 ;
 

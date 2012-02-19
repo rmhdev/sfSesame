@@ -3,6 +3,8 @@
 /* @var $company Company */
 ?>
 <div class="content">
+    
+    <h1>Companies</h1>
 
     <?php if (!$pager->getNbResults()) : ?>
     <div class="alert-message block-message warning">

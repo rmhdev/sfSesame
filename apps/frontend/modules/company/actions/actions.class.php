@@ -10,7 +10,7 @@
 class companyActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->pager = new sfDoctrinePager('Company', 1);
+        $this->pager = new sfDoctrinePager('Company', 10);
         $this->pager->setPage($request->getParameter('page', 1));
         $this->pager->init();
     }
