@@ -244,20 +244,54 @@ $browser->
     get('company')->
     with('response')->begin()->
         info('17.1.1. Link to the previous page must be disabled')->
-        checkElement('.content .pagination ul li:first("Previous")')->
-        checkElement('.content .pagination ul li:first a[href="#"]')->
-        checkElement('.content .pagination ul li:first[class*="prev disabled"]')->
+            checkElement('.content .pagination ul li:first("Previous")')->
+            checkElement('.content .pagination ul li:first a[href="#"]')->
+            checkElement('.content .pagination ul li:first[class*="prev disabled"]')->
         info('17.1.2. Link to actual page must be active')->
-        checkElement('.content .pagination ul li.active:contains("1")')->
-        checkElement('.content .pagination ul li.active a[href*="page=1"]')->
+            checkElement('.content .pagination ul li.active:contains("1")')->
+            checkElement('.content .pagination ul li.active a[href*="page=1"]')->
         info('17.1.3. Link to second page')->
-        checkElement('.content .pagination ul li:nth-child(3):contains("2")')->
-        checkElement('.content .pagination ul li:nth-child(3) a[href*="page=2"]')->
+            checkElement('.content .pagination ul li:nth-child(3):contains("2")')->
+            checkElement('.content .pagination ul li:nth-child(3) a[href*="page=2"]')->
         info('17.1.4. Link to next page')->
-        checkElement('.content .pagination ul li:nth-child(4):contains("Next")')->
-        checkElement('.content .pagination ul li:nth-child(4) a[href*="page=2"]')->
+            checkElement('.content .pagination ul li:nth-child(4):contains("Next")')->
+            checkElement('.content .pagination ul li:nth-child(4) a[href*="page=2"]')->
+    end()->
+        info('17.2 Go to next page')->
+        info('17.2.1 Click on page 2')->
+            get('company')->
+            click('.pagination a[href*="page=2"]')->
+            with('request')->begin()->
+                isParameter('module', 'company')->
+                isParameter('action', 'index')->
+                isParameter('page', 2)->
+        end()->
+        with('response')->begin()->
+            info('17.2.2. Link to the previous page must be enabled')->
+                checkElement('.content .pagination ul li:first("Previous")')->
+                checkElement('.content .pagination ul li:first a[href*="page=1"]')->
+                checkElement('.content .pagination ul li:first[class="prev"]')->
+            info('17.2.3 Link to the first page')->
+                checkElement('.content .pagination ul li:nth-child(2):contains("1")')->
+                checkElement('.content .pagination ul li:nth-child(2) a[href*="page=1"]')->
+                checkElement('.content .pagination ul li:nth-child(2) [class="active"]', false)->
+            info('17.2.4. Link to the second page must be active')->
+                checkElement('.content .pagination ul li.active:contains("2")')->
+                checkElement('.content .pagination ul li.active a[href*="page=2"]')->
     end()
 ;
 
 // test links to pages.
+
+//$browser->deleteAll();
+//
+//$browser->createAndSaveNewCompany("New company 1");
+//
+//$browser->
+//    info('18. Paginate only when is necessary')->
+//    get('company')->
+//    with('response')->begin()->
+//        checkElement('.content .pagination', false)->
+//    end()
+//;
         

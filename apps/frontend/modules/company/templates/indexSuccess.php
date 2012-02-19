@@ -10,14 +10,16 @@
     </div>
     <?php else : ?>
     
+    <?php if ($pager->haveToPaginate()) : ?>
     <div class="pagination">
         <ul>
-            <li class="prev disabled"><a href="#">Previous</a></li>
-            <li class="active"><?php echo link_to(1, url_for('@company?page=1')); ?></li>
-            <li class=""><?php echo link_to(2, url_for('@company?page=2')); ?></li>
+            <li class="prev <?php echo ($pager->getPage() == 1) ? "disabled" : "disabled"; ?>"><a href="<?php echo ($pager->getPage() == 1) ? "#" : url_for('@company?page=1'); ?>">Previous</a></li>
+            <li class="<?php echo ($pager->getPage() == 1) ? "active" : ""; ?>"><?php echo link_to(1, url_for('@company?page=1')); ?></li>
+            <li class="<?php echo ($pager->getPage() == 2) ? "active" : ""; ?>"><?php echo link_to(2, url_for('@company?page=2')); ?></li>
             <li class=""><?php echo link_to("Next", url_for('@company?page=2')); ?></li>
         </ul>
     </div>
+    <?php endif; ?>
     
     
     <table cellspacing="0">
