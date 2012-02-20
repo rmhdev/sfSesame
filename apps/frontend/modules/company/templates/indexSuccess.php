@@ -3,8 +3,9 @@
 /* @var $company Company */
 ?>
 <div class="content">
-    
+    <div class="page-header">
     <h1>Companies</h1>
+    </div>
 
 <?php if (!$pager->getNbResults()) : ?>
     <div class="alert-message block-message warning">

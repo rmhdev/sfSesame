@@ -157,17 +157,6 @@ $browser->
     end()
 ;
 
-/* Next tests:
- * - List action must retrieve 200 code.
- * - With no companys in the BD, a message must me shown.
- * - With 1 company in the BD, the table must be shown (header, footer).
- * - With 1 company in the BD, a link to company/show must exist (in the tr element).
- * - The limit of elements per page is 20, so with 21 there must be only 20 elements and a  pager menu.
- * - The links of the pager menu must behave correctly.
- * - List can be sorted (asc, desc) by all the columns.
- * - 
-*/
-
 $browser->
     info('13. Display the list')->
     get('company')->
@@ -177,7 +166,7 @@ $browser->
     end()->
     with('response')->begin()->
         isStatusCode(200)->
-        checkElement('.content h1', 'Companies')->
+        checkElement('.content .page-header h1', 'Companies')->
     end()
 ;
 
@@ -214,17 +203,25 @@ $browser->
     end()
 ;
 
+$browser->
+    info('16. Paginate only when is necessary')->
+    get('company')->
+    with('response')->begin()->
+        checkElement('.content .pagination', false)->
+    end()
+;
+
 $browser->createAndSaveMultipleCompanies(10);
 
 $browser->
-    info('16. The list can be paginated')->
-    info('16.1. The list shows a max number of companies per page')->
+    info('17. The list can be paginated')->
+    info('17.1. The list shows a max number of companies per page')->
     get('company')->
     with('response')->begin()->
-        info('16.2. With 11 elements, show only 10')->
+        info('17.2. With 11 elements, show only 10')->
         checkElement('.content table tbody tr', true, array('count' => 10))->
     end()->
-    info('16.3. In the second page there must be one company only')->
+    info('17.3. In the second page there must be one company only')->
     get('company?page=2')->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -237,32 +234,30 @@ $browser->
     end()
 ;
 
-// previous - [1] - [2] - next
-
 $browser->
-    info('17. Links to pagination')->
-    info('17.1. In first page')->
+    info('18. Links to pagination')->
+    info('18.1. In first page')->
     get('company')->
     with('response')->begin()->
-        info('17.1.1. Link to the previous page must be disabled')->
+        info('18.1.1. Link to the previous page must be disabled')->
             checkElement('.content .pagination ul li:first("Previous")')->
             checkElement('.content .pagination ul li:first a[href="#"]')->
             checkElement('.content .pagination ul li:first[class*="prev disabled"]')->
-        info('17.1.2. Link to actual page must be active')->
+        info('18.1.2. Link to actual page must be active')->
             checkElement('.content .pagination ul li.active:contains("1")')->
             checkElement('.content .pagination ul li.active a[href*="page=1"]')->
-        info('17.1.3. Link to second page')->
+        info('18.1.3. Link to second page')->
             checkElement('.content .pagination ul li:nth-child(3):contains("2")')->
             checkElement('.content .pagination ul li:nth-child(3) a[href*="page=2"]')->
-        info('17.1.4. Link to next page')->
+        info('18.1.4. Link to next page')->
             checkElement('.content .pagination ul li.next:contains("Next")')->
             checkElement('.content .pagination ul li.next a[href*="page=2"]')->
-        info('17.1.5. Information about actual/total pages')->
+        info('18.1.5. Information about actual/total pages')->
             checkElement('.content table tfoot tr td', "#Page 1/2#")->
             checkElement('.content table tfoot tr td', "#11 results#")->
     end()->
-        info('17.2 Go to next page')->
-        info('17.2.1 Click on page 2')->
+        info('18.2 Go to next page')->
+        info('18.2.1 Click on page 2')->
             get('company')->
             click('.pagination a[href*="page=2"]')->
             with('request')->begin()->
@@ -271,37 +266,28 @@ $browser->
                 isParameter('page', 2)->
         end()->
         with('response')->begin()->
-            info('17.2.2. Link to the previous page must be enabled')->
+            info('18.2.2. Link to the previous page must be enabled')->
                 checkElement('.content .pagination ul li:first("Previous")')->
                 checkElement('.content .pagination ul li:first a[href*="page=1"]')->
                 checkElement('.content .pagination ul li:first[class="prev"]')->
-            info('17.2.3 Link to the first page')->
+            info('18.2.3 Link to the first page')->
                 checkElement('.content .pagination ul li:nth-child(2):contains("1")')->
                 checkElement('.content .pagination ul li:nth-child(2) a[href*="page=1"]')->
                 checkElement('.content .pagination ul li:nth-child(2) [class="active"]', false)->
-            info('17.2.4. Link to the second page must be active')->
+            info('18.2.4. Link to the second page must be active')->
                 checkElement('.content .pagination ul li.active:contains("2")')->
                 checkElement('.content .pagination ul li.active a[href*="page=2"]')->
-            info('17.2.5 Link to the next page is unactive')->
+            info('18.2.5 Link to the next page is unactive')->
                 checkElement('.content .pagination ul li.next a[href="#"]')->
                 checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
-            info('17.2.6. Information about actual/total pages')->
+            info('18.2.6. Information about actual/total pages')->
                 checkElement('.content table tfoot tr td', "#Page 2/2#")->
                 //checkElement('.content table tfoot tr td', "#11 results#")->
     end()
 ;
 
-// test links to pages.
 
-//$browser->deleteAll();
-//
-//$browser->createAndSaveNewCompany("New company 1");
-//
-//$browser->
-//    info('18. Paginate only when is necessary')->
-//    get('company')->
-//    with('response')->begin()->
-//        checkElement('.content .pagination', false)->
-//    end()
-//;
-        
+// Next tests: 
+//   - reorder by column: id, name.
+//   - Batch actions: delete
+//   - Filtering: name
