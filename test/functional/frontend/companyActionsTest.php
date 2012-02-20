@@ -256,33 +256,33 @@ $browser->
             checkElement('.content table tfoot tr td', "#Page 1/2#")->
             checkElement('.content table tfoot tr td', "#11 results#")->
     end()->
-        info('18.2 Go to next page')->
-        info('18.2.1 Click on page 2')->
-            get('company')->
-            click('.pagination a[href*="page=2"]')->
-            with('request')->begin()->
-                isParameter('module', 'company')->
-                isParameter('action', 'index')->
-                isParameter('page', 2)->
-        end()->
-        with('response')->begin()->
-            info('18.2.2. Link to the previous page must be enabled')->
-                checkElement('.content .pagination ul li:first("Previous")')->
-                checkElement('.content .pagination ul li:first a[href*="page=1"]')->
-                checkElement('.content .pagination ul li:first[class="prev"]')->
-            info('18.2.3 Link to the first page')->
-                checkElement('.content .pagination ul li:nth-child(2):contains("1")')->
-                checkElement('.content .pagination ul li:nth-child(2) a[href*="page=1"]')->
-                checkElement('.content .pagination ul li:nth-child(2) [class="active"]', false)->
-            info('18.2.4. Link to the second page must be active')->
-                checkElement('.content .pagination ul li.active:contains("2")')->
-                checkElement('.content .pagination ul li.active a[href*="page=2"]')->
-            info('18.2.5 Link to the next page is unactive')->
-                checkElement('.content .pagination ul li.next a[href="#"]')->
-                checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
-            info('18.2.6. Information about actual/total pages')->
-                checkElement('.content table tfoot tr td', "#Page 2/2#")->
-                //checkElement('.content table tfoot tr td', "#11 results#")->
+    info('18.2 Go to next page')->
+    info('18.2.1 Click on page 2')->
+        get('company')->
+        click('.pagination a[href*="page=2"]')->
+        with('request')->begin()->
+            isParameter('module', 'company')->
+            isParameter('action', 'index')->
+            isParameter('page', 2)->
+    end()->
+    with('response')->begin()->
+        info('18.2.2. Link to the previous page must be enabled')->
+            checkElement('.content .pagination ul li:first("Previous")')->
+            checkElement('.content .pagination ul li:first a[href*="page=1"]')->
+            checkElement('.content .pagination ul li:first[class="prev"]')->
+        info('18.2.3 Link to the first page')->
+            checkElement('.content .pagination ul li:nth-child(2):contains("1")')->
+            checkElement('.content .pagination ul li:nth-child(2) a[href*="page=1"]')->
+            checkElement('.content .pagination ul li:nth-child(2) [class="active"]', false)->
+        info('18.2.4. Link to the second page must be active')->
+            checkElement('.content .pagination ul li.active:contains("2")')->
+            checkElement('.content .pagination ul li.active a[href*="page=2"]')->
+        info('18.2.5 Link to the next page is unactive')->
+            checkElement('.content .pagination ul li.next a[href="#"]')->
+            checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
+        info('18.2.6. Information about actual/total pages')->
+            checkElement('.content table tfoot tr td', "#Page 2/2#")->
+            //checkElement('.content table tfoot tr td', "#11 results#")->
     end()
 ;
 
@@ -291,3 +291,13 @@ $browser->
 //   - reorder by column: id, name.
 //   - Batch actions: delete
 //   - Filtering: name
+
+
+$browser->
+    info('19. Sort list')->
+    info('19.1. Default sort is name, ascending')->
+    get('company')->
+    with('response')->begin()->
+        checkElement('.content table tbody tr:first', "#".sprintf($browser->getCreatedCompanynamePattern(), 1)."#" )->
+    end()
+;
