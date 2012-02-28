@@ -302,19 +302,24 @@ $sortTests['name'] = array(
     'desc'  => $browser->findFirstOrderedByName('desc')->getName(),
 );
 
-$browser->
-    info('19. Sort list')
-;
-
-$i = $columnId = 1;
+$browser->info('19. Sort list');
+$browser->info('19.1. Sort list by url');
+$i = $columnId = 0;
 foreach ($sortTests as $sortColumn=>$sortInfo){
-    foreach ($sortInfo as $sortType=>$expectedResult){
-        $browser->info("19.{$i}. Default sort is {$sortColumn}, {$sortType}")->
-        get("company?sort={$sortColumn}&sort_type={$sortType}")->
-        with('response')->begin()->
-            checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
-        end();
-        $i++;
-    }
     $columnId++;
+    foreach ($sortInfo as $sortType=>$expectedResult){
+        $i++;
+        $browser->info("19.{$i}. Default sort is {$sortColumn}, {$sortType}")->
+            get("company?sort={$sortColumn}&sort_type={$sortType}")->
+            with('response')->begin()->
+                checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
+            end()
+        ;
+    }
 }
+
+$browser->info('19.2. After sorting, the sort column and type must be remembered')->
+    get('company?sort=id&sort_type=desc')->
+    with('response')->
+        checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
+end();
