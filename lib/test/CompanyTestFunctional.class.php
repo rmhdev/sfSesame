@@ -51,5 +51,19 @@ class CompanyTestFunctional extends sfTestFunctional {
     public function getCreatedCompanynamePattern(){
         return "Auto company %d";
     }
+    
+    public function findFirstOrderedById($sortType = "asc"){
+        $query = Doctrine::getTable('Company')->
+            createQuery('u')->
+            orderBy("id {$sortType}");
+        return $query->fetchOne();
+    }
+    
+    public function findFirstOrderedByName($sortType = "asc"){
+        $query = Doctrine::getTable('Company')->
+            createQuery('u')->
+            orderBy("name {$sortType}");
+        return $query->fetchOne();
+    }
 
 }

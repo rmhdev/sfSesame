@@ -10,9 +10,12 @@
 class companyActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
+        $sort = $request->getParameter('sort');
+        $sortType = $request->getParameter('sort_type');
+        
         $this->pager = new sfDoctrinePager('Company', 10);
         $this->pager->setPage($request->getParameter('page', 1));
-        $this->pager->getQuery()->orderBy('name', 'asc');
+        $this->pager->getQuery()->orderBy(($sort ? $sort : 'name') . " " . ($sortType ? $sortType : 'asc'));
         $this->pager->init();
     }
 

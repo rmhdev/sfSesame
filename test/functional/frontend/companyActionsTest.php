@@ -292,12 +292,29 @@ $browser->
 //   - Batch actions: delete
 //   - Filtering: name
 
+$sortTests = array();
+$sortTests['id'] = array(
+    'asc'   => $browser->findFirstOrderedById('asc')->getId(),
+    'desc'  => $browser->findFirstOrderedById('desc')->getId(),
+);
+$sortTests['name'] = array(
+    'asc'   => $browser->findFirstOrderedByName('asc')->getName(),
+    'desc'  => $browser->findFirstOrderedByName('desc')->getName(),
+);
 
 $browser->
-    info('19. Sort list')->
-    info('19.1. Default sort is name, ascending')->
-    get('company')->
-    with('response')->begin()->
-        checkElement('.content table tbody tr:first', "#".sprintf($browser->getCreatedCompanynamePattern(), 1)."#" )->
-    end()
+    info('19. Sort list')
 ;
+
+$i = $columnId = 1;
+foreach ($sortTests as $sortColumn=>$sortInfo){
+    foreach ($sortInfo as $sortType=>$expectedResult){
+        $browser->info("19.{$i}. Default sort is {$sortColumn}, {$sortType}")->
+        get("company?sort={$sortColumn}&sort_type={$sortType}")->
+        with('response')->begin()->
+            checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
+        end();
+        $i++;
+    }
+    $columnId++;
+}
