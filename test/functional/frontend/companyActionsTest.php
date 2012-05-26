@@ -305,6 +305,7 @@ $sortTests['name'] = array(
 $browser->info('19. Sort list');
 $browser->info('19.1. Sort list by url');
 $i = $columnId = 0;
+$expectedResult = "";
 foreach ($sortTests as $sortColumn=>$sortInfo){
     $columnId++;
     foreach ($sortInfo as $sortType=>$expectedResult){
@@ -319,7 +320,9 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
 }
 
 $browser->info('19.2. After sorting, the sort column and type must be remembered')->
-    get('company?sort=id&sort_type=desc')->
+    get('company')->
     with('response')->
-        checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
-end();
+        checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)
+;
+
+

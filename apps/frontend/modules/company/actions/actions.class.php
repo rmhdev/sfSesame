@@ -10,13 +10,13 @@
 class companyActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $sort = $request->getParameter('sort');
-        $sortType = $request->getParameter('sort_type');
-        
-        $this->pager = new sfDoctrinePager('Company', 10);
-        $this->pager->setPage($request->getParameter('page', 1));
-        $this->pager->getQuery()->orderBy(($sort ? $sort : 'name') . " " . ($sortType ? $sortType : 'asc'));
-        $this->pager->init();
+        if ($request->getParameter('sort')){
+            $this->setSort($request->getParameter('sort'), $request->getParameter('sort_type'));
+        }
+        if ($request->getParameter('page')) {
+            $this->setPage($request->getParameter('page'));
+        }
+        $this->pager = $this->getPager();
     }
 
     public function executeNew(sfWebRequest $request) {
@@ -68,6 +68,53 @@ class companyActions extends sfActions {
 
     public function executeShow(sfWebRequest $request){
         $this->company = $this->getRoute()->getObject();
+    }
+    
+    protected function setSort($sortField, $sortType){
+        if ((null !== $sortField) && (null === $sortType)) {
+            $sortType = 'asc';
+        }
+        $this->getUser()->setAttribute('company.sort', array($sortField, $sortType), 'admin_module');
+    }
+    
+    protected function getSort() {
+        $sort = $this->getUser()->getAttribute('company.sort', null, 'admin_module');
+        if ($sort === null) {
+            $sort = array('id', 'asc');
+            $this->setSort($sort[0], $sort[1]);
+        }
+        
+        return $sort;
+    }
+    
+    protected function getPager(){
+        $pager = new sfDoctrinePager('Company', 10);
+        $pager->setQuery($this->buildQuery());
+        $pager->setPage($this->getPage());
+        $pager->init();
+        
+        return $pager;
+    }
+    
+    protected function getPage() {
+        return $this->getUser()->getAttribute('company.page', 1, 'admin_module');
+    }
+    
+    protected function setPage($page = 1) {
+        $this->getUser()->setAttribute('company.page', $page, 'admin_module');
+    }
+    
+    protected function buildQuery() {
+        $filter = new CompanyFormFilter();
+        $query = $filter->buildQuery(array());
+        $sort = $this->getSort();
+        if ($sort) {
+            $query->orderBy(sprintf("%s %s", $sort[0], $sort[1]));
+        }
+        
+        //print_r($query->getSqlQuery()); die();
+        
+        return $query;
     }
 
 }
