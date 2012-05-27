@@ -234,10 +234,12 @@ $browser->
     end()
 ;
 
+
+
 $browser->
     info('18. Links to pagination')->
     info('18.1. In first page')->
-    get('company')->
+    get('company?page=1')->
     with('response')->begin()->
         info('18.1.1. Link to the previous page must be disabled')->
             checkElement('.content .pagination ul li:first("Previous")')->
@@ -303,6 +305,7 @@ $sortTests['name'] = array(
 );
 
 $browser->info('19. Sort list');
+$browser->get('company?page=1');
 $browser->info('19.1. Sort list by url');
 $i = $columnId = 0;
 $expectedResult = "";
@@ -310,7 +313,7 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
     $columnId++;
     foreach ($sortInfo as $sortType=>$expectedResult){
         $i++;
-        $browser->info("19.{$i}. Default sort is {$sortColumn}, {$sortType}")->
+        $browser->info("19.1.{$i}. Default sort is {$sortColumn}, {$sortType}")->
             get("company?sort={$sortColumn}&sort_type={$sortType}")->
             with('response')->begin()->
                 checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->

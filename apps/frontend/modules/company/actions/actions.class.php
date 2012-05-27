@@ -89,9 +89,16 @@ class companyActions extends sfActions {
     
     protected function getPager(){
         $pager = new sfDoctrinePager('Company', 10);
-        $pager->setQuery($this->buildQuery());
+        //$pager->setQuery($this->buildQuery());
+        $sort = $this->getSort();
+        if ($sort){
+            $pager->getQuery()->orderBy(sprintf("%s %s", $sort[0], $sort[1]));
+        }
+        
         $pager->setPage($this->getPage());
         $pager->init();
+        
+        //print_r($pager->getQuery()->getSqlQuery()); die();
         
         return $pager;
     }
@@ -105,16 +112,16 @@ class companyActions extends sfActions {
     }
     
     protected function buildQuery() {
-        $filter = new CompanyFormFilter();
-        $query = $filter->buildQuery(array());
-        $sort = $this->getSort();
-        if ($sort) {
-            $query->orderBy(sprintf("%s %s", $sort[0], $sort[1]));
-        }
-        
-        //print_r($query->getSqlQuery()); die();
-        
-        return $query;
+//        $filter = new CompanyFormFilter(array());
+//        $query = $filter->buildQuery(array());
+//        $sort = $this->getSort();
+//        if ($sort) {
+//            $query->addOrderBy(sprintf("%s %s", $sort[0], $sort[1]));
+//        }
+//        $event = $this->dispatcher->filter(new sfEvent($this, 'admin.build_query'), $query);
+//        $query = $event->getReturnValue();
+//        
+//        return $query;
     }
 
 }

@@ -55,14 +55,14 @@ class CompanyTestFunctional extends sfTestFunctional {
     public function findFirstOrderedById($sortType = "asc"){
         $query = Doctrine::getTable('Company')->
             createQuery('u')->
-            orderBy("id {$sortType}");
+            orderBy("u.id {$sortType}");
         return $query->fetchOne();
     }
     
     public function findFirstOrderedByName($sortType = "asc"){
         $query = Doctrine::getTable('Company')->
             createQuery('u')->
-            orderBy("name {$sortType}");
+            orderBy("u.name {$sortType}");
         return $query->fetchOne();
     }
 
