@@ -284,7 +284,13 @@ $browser->
             checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
         info('18.2.6. Information about actual/total pages')->
             checkElement('.content table tfoot tr td', "#Page 2/2#")->
-            //checkElement('.content table tfoot tr td', "#11 results#")->
+            checkElement('.content table tfoot tr td', "#11 results#")->
+    end()->
+    info('18.3 Page must be remembered')->
+        get('company')->
+        with('response')->begin()->
+            info('18.3.1. Information about actual/total pages')->
+            checkElement('.content table tfoot tr td', "#Page 2/2#")->
     end()
 ;
 
