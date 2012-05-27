@@ -80,26 +80,23 @@ class companyActions extends sfActions {
     protected function getSort() {
         $sort = $this->getUser()->getAttribute('company.sort', null, 'admin_module');
         if ($sort === null) {
-            $sort = array('id', 'asc');
+            $sort = $this->getDefaultSort();
             $this->setSort($sort[0], $sort[1]);
         }
         
         return $sort;
     }
     
+    protected function getDefaultSort() {
+        return array('id', 'asc');
+    }
+    
     protected function getPager(){
         $pager = new sfDoctrinePager('Company', 10);
-        //$pager->setQuery($this->buildQuery());
-        $sort = $this->getSort();
-        if ($sort){
-            $pager->getQuery()->orderBy(sprintf("%s %s", $sort[0], $sort[1]));
-        }
-        
+        $pager->setQuery($this->buildQuery());
         $pager->setPage($this->getPage());
         $pager->init();
-        
-        //print_r($pager->getQuery()->getSqlQuery()); die();
-        
+
         return $pager;
     }
     
@@ -112,16 +109,14 @@ class companyActions extends sfActions {
     }
     
     protected function buildQuery() {
-//        $filter = new CompanyFormFilter(array());
-//        $query = $filter->buildQuery(array());
-//        $sort = $this->getSort();
-//        if ($sort) {
-//            $query->addOrderBy(sprintf("%s %s", $sort[0], $sort[1]));
-//        }
-//        $event = $this->dispatcher->filter(new sfEvent($this, 'admin.build_query'), $query);
-//        $query = $event->getReturnValue();
-//        
-//        return $query;
+        $filter = new CompanyFormFilter(array());
+        $query = $filter->buildQuery(array());
+        $sort = $this->getSort();
+        if ($sort) {
+            $query->addOrderBy(sprintf("%s %s", $sort[0], $sort[1]));
+        }
+
+        return $query;
     }
 
 }
