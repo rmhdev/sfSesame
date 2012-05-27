@@ -33,14 +33,14 @@
                 <td colspan="2"><span><?php echo $pager->getNbResults(); ?> results</span> Page <?php echo sprintf("%d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
             </tr>
         </tfoot>
-        <?php foreach ($pager->getResults() as $company) : ?>
         <tbody>
+        <?php foreach ($pager->getResults() as $company) : ?>
             <tr>
                 <td><?php echo $company->getPrimaryKey(); ?></td>
                 <td><?php echo link_to($company->getName(), url_for('company_show', $company)); ?></td>
             </tr>
-        </tbody>
         <?php endforeach; ?>
+        </tbody>
     </table>
 <?php endif; ?>
 

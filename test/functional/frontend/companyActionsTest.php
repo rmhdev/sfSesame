@@ -294,12 +294,6 @@ $browser->
     end()
 ;
 
-
-// Next tests: 
-//   - reorder by column: id, name.
-//   - Batch actions: delete
-//   - Filtering: name
-
 $sortTests = array();
 $sortTests['id'] = array(
     'asc'   => $browser->findFirstOrderedById('asc')->getId(),
@@ -377,5 +371,6 @@ $browser->info('19.3. Links for sorting by columns')->
         checkElement('.content table thead tr:first th:nth-child(2) a:contains("desc")')->
         checkElement('.content table thead tr:first a:contains("desc")', 1)->
     end()
-        
 ;
+
+// next tests: filtering, batch actions.
