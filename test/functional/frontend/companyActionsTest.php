@@ -317,7 +317,7 @@ $i = $columnId = 0;
 $expectedResult = "";
 foreach ($sortTests as $sortColumn=>$sortInfo){
     $columnId++;
-    foreach ($sortInfo as $sortType=>$expectedResult){
+    foreach ($sortInfo as $sortType=>$expectedResult) {
         $i++;
         $browser->info("19.1.{$i}. Default sort is {$sortColumn}, {$sortType}")->
             get("company?sort={$sortColumn}&sort_type={$sortType}")->
@@ -334,4 +334,48 @@ $browser->info('19.2. After sorting, the sort column and type must be remembered
         checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)
 ;
 
-
+$browser->info('19.3. Links for sorting by columns')->
+    info('19.3.1. Default sorting')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=desc"))->
+        checkElement(sprintf('.content table thead tr:first th:nth-child(2) a[href*="%s"]', "/company?sort=name&sort_type=asc"))->
+    end()->
+    
+    info('19.3.2. Clicking on actually sorting column link changes sort type')->
+    click('.content table thead tr:first th:nth-child(1) a')->
+    with('response')->begin()->
+        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
+    end()->
+    
+    info('19.3.3. Clicking on not actually sorting column link changes sort type')->
+    click('.content table thead tr:first th:nth-child(2) a')->
+    with('response')->begin()->
+        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th:nth-child(2) a[href*="%s"]', "/company?sort=name&sort_type=desc"))->
+    end()->
+        
+    info('19.3.4. Text in links must indicated wich column is beeing sorted')->
+    get('company?sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content table thead tr:first th:nth-child(1) a:contains("asc")')->
+        checkElement('.content table thead tr:first a:contains("asc")', 1)->
+    end()->
+    get('company?sort=id&sort_type=desc')->
+    with('response')->begin()->
+        checkElement('.content table thead tr:first th:nth-child(1) a:contains("desc")')->
+        checkElement('.content table thead tr:first a:contains("desc")', 1)->
+    end()->
+        
+    get('company?sort=name&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content table thead tr:first th:nth-child(2) a:contains("asc")')->
+        checkElement('.content table thead tr:first a:contains("asc")', 1)->
+    end()->
+    get('company?sort=name&sort_type=desc')->
+    with('response')->begin()->
+        checkElement('.content table thead tr:first th:nth-child(2) a:contains("desc")')->
+        checkElement('.content table thead tr:first a:contains("desc")', 1)->
+    end()
+        
+;

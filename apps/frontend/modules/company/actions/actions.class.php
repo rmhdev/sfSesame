@@ -17,6 +17,7 @@ class companyActions extends sfActions {
             $this->setPage($request->getParameter('page'));
         }
         $this->pager = $this->getPager();
+        $this->sort = $this->getSort();
     }
 
     public function executeNew(sfWebRequest $request) {
