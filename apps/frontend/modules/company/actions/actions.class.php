@@ -110,14 +110,23 @@ class companyActions extends sfActions {
     }
     
     protected function buildQuery() {
-        $filter = new CompanyFormFilter(array());
-        $query = $filter->buildQuery(array());
+        $query = $this->createQuery();
+        $this->addSortQuery($query);
+
+        return $query;
+    }
+    
+    protected function createQuery($filters = array()) {
+        $filter = new CompanyFormFilter($filters);
+        
+        return $filter->buildQuery($filters);
+    }
+    
+    protected function addSortQuery(Doctrine_Query $query) {
         $sort = $this->getSort();
         if ($sort) {
             $query->addOrderBy(sprintf("%s %s", $sort[0], $sort[1]));
         }
-
-        return $query;
     }
 
 }
