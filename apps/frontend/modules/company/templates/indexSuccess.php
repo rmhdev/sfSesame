@@ -21,21 +21,11 @@
         <thead>
             <tr>
                 <th><?php 
-                $sortType = 'asc';
-                $name = "Id";
-                if (($sort[0] == 'id')) {
-                    $sortType = ($sort[1] == 'asc') ? 'desc' : 'asc';
-                    $name .= sprintf(" (%s)", $sort[1]);
-                }
-                echo link_to($name, '@company?sort=id&sort_type=' . $sortType); ?></th>
+                echo sesame_link_to_sort('Id', '@company', array('field' => 'id', 'sort' => $sort[0], 'sort_type' => $sort[1]));
+                ?></th>
                 <th><?php 
-                $sortType = 'asc';
-                $name = "Name";
-                if (($sort[0] == 'name')) {
-                    $sortType = ($sort[1] == 'asc') ? 'desc' : 'asc';
-                    $name .= sprintf(" (%s)", $sort[1]);
-                }
-                echo link_to($name, '@company?sort=name&sort_type=' . $sortType); ?></th>
+                echo sesame_link_to_sort('Name', '@company', array('field' => 'name', 'sort' => $sort[0], 'sort_type' => $sort[1]));
+                ?></th>
             </tr>
         </thead>
         <tfoot>

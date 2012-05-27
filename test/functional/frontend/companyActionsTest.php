@@ -348,14 +348,14 @@ $browser->info('19.3. Links for sorting by columns')->
         checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
     end()->
     
-    info('19.3.3. Clicking on not actually sorting column link changes sort type')->
+    info('19.3.3. Clicking on not actually sorting column link sets sort type to asc')->
     click('.content table thead tr:first th:nth-child(2) a')->
     with('response')->begin()->
         checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
         checkElement(sprintf('.content table thead tr:first th:nth-child(2) a[href*="%s"]', "/company?sort=name&sort_type=desc"))->
     end()->
         
-    info('19.3.4. Text in links must indicated wich column is beeing sorted')->
+    info('19.3.4. Links must indicate which column is beeing sorted')->
     get('company?sort=id&sort_type=asc')->
     with('response')->begin()->
         checkElement('.content table thead tr:first th:nth-child(1) a:contains("asc")')->

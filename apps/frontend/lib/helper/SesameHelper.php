@@ -33,3 +33,27 @@ function sesame_render_pager($pager, $route){
     
     return $html;
 }
+/**
+ * @param string $label
+ * @param string $route
+ * @param array $options
+ * @return string  
+ */
+function sesame_link_to_sort($label, $route, $options = array()) {
+    if (!isset($options['sort']) || !isset($options['sort_type'])) {
+        return $label;
+    }
+    if (!isset($options['field'])) {
+        return $label;
+    }
+    
+    $sortType = "asc";
+    if (($options['sort'] === $options['field'])) {
+        $label .= sprintf(" (%s)", $options['sort_type']);
+        $sortType = ($options['sort_type'] === 'asc') ? 'desc' : 'asc';
+    }
+    $queryString = sprintf("sort=%s&sort_type=%s", $options['field'], $sortType);
+    $options['query_string'] = $queryString;
+    
+    return link_to($label, $route, $options);
+}
