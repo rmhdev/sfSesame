@@ -16,8 +16,23 @@ class companyActions extends sfActions {
         if ($request->getParameter('page')) {
             $this->setPage($request->getParameter('page'));
         }
-        $this->pager = $this->getPager();
-        $this->sort = $this->getSort();
+        $this->pager        = $this->getPager();
+        $this->sort         = $this->getSort();
+        $this->formFilter   = new CompanyFormFilter();
+    }
+    
+    public function executeFilter(sfWebRequest $request) {
+        $this->setPage(1);
+        $this->formFilter = new CompanyFormFilter(array());
+        $this->formFilter->bind($request->getParameter($this->formFilter->getName()));
+        if ($this->formFilter->isValid()) {
+            $this->setFilters($this->formFilter->getValues());
+            
+            $this->redirect('@company');
+        }
+        $this->pager    = $this->getPager();
+        $this->sort     = $this->getSort();
+        $this->setTemplate('index');
     }
 
     public function executeNew(sfWebRequest $request) {
@@ -127,6 +142,10 @@ class companyActions extends sfActions {
         if ($sort) {
             $query->addOrderBy(sprintf("%s %s", $sort[0], $sort[1]));
         }
+    }
+    
+    protected function setFilters(array $filters = array()) {
+        $this->getUser()->setAttribute('company.filters', $filters, 'admin_module');
     }
 
 }

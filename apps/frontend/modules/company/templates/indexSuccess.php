@@ -1,6 +1,7 @@
 <?php
 /* @var $pager sfPager */
 /* @var $company Company */
+/* @var $formFilter CompanyFormFilter */ 
 ?>
 <div class="content">
     <div class="page-header">
@@ -12,6 +13,12 @@
         <p><strong>No items in the list</strong> </p>
     </div>
 <?php else : ?>
+    
+    <form action="<?php echo url_for('company_collection', array('action' => 'filter')); ?>" method="post" class="form-filter">
+        <?php echo $formFilter->render(); ?>
+        
+        <input type="submit" value="Filter" class="btn success"/>
+    </form>
     
     <?php if ($pager->haveToPaginate()) : ?>
     <?php echo sesame_render_pager($pager, '@company'); ?>

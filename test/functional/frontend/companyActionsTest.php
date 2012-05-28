@@ -374,3 +374,19 @@ $browser->info('19.3. Links for sorting by columns')->
 ;
 
 // next tests: filtering, batch actions.
+
+$browser->info('20. Filtering list')->
+    info('20.1. The filtering form must exist')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content form.form-filter')->
+    end()->
+        
+    info("20.2. The required fields can't be empty" )->
+    get('company')->
+    click('.content form.form-filter input[type=submit]', $browser->getDataForEmptyFilter())->
+      with('form')->begin()->
+        hasErrors(1)->
+        //isError('name', 'required')->
+    end()
+;

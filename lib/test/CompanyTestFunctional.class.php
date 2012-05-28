@@ -65,5 +65,17 @@ class CompanyTestFunctional extends sfTestFunctional {
             orderBy("u.name {$sortType}");
         return $query->fetchOne();
     }
+    
+    // FILTERS
+    public function getDataForEmptyFilter(){
+        return array(
+            'company_filters' => array(
+                'name'  => ''
+            ),
+            array(
+              '_with_csrf' => true
+            )
+        );
+    }
 
 }
