@@ -12,7 +12,7 @@ class CompanyFormFilter extends BaseCompanyFormFilter
   public function configure()
   {
       $this->useFields(array('name'));
-      $this->setWidget('name'   , new sfWidgetFormInput());
+      $this->setWidget('name'   , new sfWidgetFormInput(array(), array('class' => 'span2')));
       $this->setValidator('name', new sfValidatorString(array('required' => true)));
   }
 }
