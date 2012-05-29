@@ -383,16 +383,8 @@ $browser->info('20. Filtering list')->
     with('response')->begin()->
         checkElement('.content form.form-filter')->
     end()->
-        
-    info("20.2. The required fields can't be empty" )->
-    get('company')->
-    click('.content form.form-filter input[type="submit"]', $browser->getDataForEmptyFilter())->
-      with('form')->begin()->
-        hasErrors(1)->
-        isError('name', 'required')->
-    end()->
     
-    info('20.3. After a correct search, redirect to index action')->
+    info('20.2. After a correct search, redirect to index action')->
     get('company')->
     click('.content form.form-filter input[type="submit"]', $browser->getDataFilterWithName('zzz'))->
     with('form')->begin()->
@@ -405,21 +397,26 @@ $browser->info('20. Filtering list')->
     end();
 
 $filterNameUnknown = "zzz";
-$browser->info('20.4. After a correct search, filters must be remembered')->
+$browser->info('20.3. After a correct search, filters must be remembered')->
     get('company')->
     click('.content form.form-filter input[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 1)->
     end()->
-        
     
-    info('20.5. Filters can be reseted (empty filters)')->
+    info('20.4. Filters can be reseted (empty filters)')->
     get('company')->
     click('.content form.form-filter a.reset-filter')->
-
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 0)->
-        //checkElement('.content table tfoot tr td', sprintf("#%d results#", $totalItems))->
+    end()->
+    
+    info('20.5. Searching by unknown name returns an empty list')->
+    get('company')->
+    click('.content form.form-filter input[type="submit"]', $browser->getDataFilterWithName($filterNameUnknown))->
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content:contains("No items in the list")')->
     end()
 ;

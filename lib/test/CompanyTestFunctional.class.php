@@ -70,7 +70,9 @@ class CompanyTestFunctional extends sfTestFunctional {
     public function getDataForEmptyFilter(){
         return array(
             'company_filters' => array(
-                'name'  => ''
+                'name'  => array(
+                    'text'  => ''
+                )
             ),
             array(
               '_with_csrf' => true
@@ -80,7 +82,7 @@ class CompanyTestFunctional extends sfTestFunctional {
     
     public function getDataFilterWithName($name){
         $data = $this->getDataForEmptyFilter();
-        $data['company_filters']['name'] = $name;
+        $data['company_filters']['name']['text'] = $name;
         
         return $data;
     }
