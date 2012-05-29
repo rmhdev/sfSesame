@@ -18,16 +18,19 @@ class companyActions extends sfActions {
         }
         $this->pager        = $this->getPager();
         $this->sort         = $this->getSort();
-        $this->formFilter   = new CompanyFormFilter();
+        $this->formFilter   = $this->getFormFilter($this->getFilters());
     }
     
     public function executeFilter(sfWebRequest $request) {
         $this->setPage(1);
-        $this->formFilter = new CompanyFormFilter(array());
+        if ($request->hasParameter('_reset')) {
+            $this->setFilters(array());
+            $this->redirect('@company');
+        }
+        $this->formFilter = $this->getFormFilter($this->getFilters());
         $this->formFilter->bind($request->getParameter($this->formFilter->getName()));
         if ($this->formFilter->isValid()) {
             $this->setFilters($this->formFilter->getValues());
-            
             $this->redirect('@company');
         }
         $this->pager    = $this->getPager();
@@ -125,16 +128,16 @@ class companyActions extends sfActions {
     }
     
     protected function buildQuery() {
-        $query = $this->createQuery();
+        $query = $this->createQuery($this->getFilters());
         $this->addSortQuery($query);
 
         return $query;
     }
     
     protected function createQuery($filters = array()) {
-        $filter = new CompanyFormFilter($filters);
+        $formFilter = $this->getFormFilter($filters);
         
-        return $filter->buildQuery($filters);
+        return $formFilter->buildQuery($filters);
     }
     
     protected function addSortQuery(Doctrine_Query $query) {
@@ -144,8 +147,20 @@ class companyActions extends sfActions {
         }
     }
     
-    protected function setFilters(array $filters = array()) {
+    protected function setFilters(array $filters) {
         $this->getUser()->setAttribute('company.filters', $filters, 'admin_module');
+    }
+    
+    protected function getFilters() {
+        return $this->getUser()->getAttribute('company.filters', $this->getDefaultFilters(), 'admin_module');
+    }
+    
+    protected function getDefaultFilters() {
+        return array();
+    }
+    
+    protected function getFormFilter(array $filters) {
+        return new CompanyFormFilter($filters);
     }
 
 }

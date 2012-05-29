@@ -16,6 +16,7 @@
                     <?php echo $formFilter->render(); ?>
                     <div class="actions">
                         <input type="submit" value="Filter" class="btn success"/>
+                        <?php echo link_to('Reset', url_for('company_collection', array('action' => 'filter')), array('class' => 'reset-filter', 'method' => 'post', 'query_string' => '_reset')); ?>
                     </div>
                 </fieldset>
             </form>

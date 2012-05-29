@@ -77,5 +77,12 @@ class CompanyTestFunctional extends sfTestFunctional {
             )
         );
     }
+    
+    public function getDataFilterWithName($name){
+        $data = $this->getDataForEmptyFilter();
+        $data['company_filters']['name'] = $name;
+        
+        return $data;
+    }
 
 }

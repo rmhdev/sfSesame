@@ -182,6 +182,7 @@ $browser->
 ;
 
 $company = $browser->createAndSaveNewCompany("New company 1");
+$totalItems = 1;
 
 $browser->
     info('15. With companys to show, the table must be shown')->
@@ -212,6 +213,7 @@ $browser->
 ;
 
 $browser->createAndSaveMultipleCompanies(10);
+$totalItems += 10;
 
 $browser->
     info('17. The list can be paginated')->
@@ -256,7 +258,7 @@ $browser->
             checkElement('.content .pagination ul li.next a[href*="page=2"]')->
         info('18.1.5. Information about actual/total pages')->
             checkElement('.content table tfoot tr td', "#Page 1/2#")->
-            checkElement('.content table tfoot tr td', "#11 results#")->
+            checkElement('.content table tfoot tr td', sprintf("#%d results#", $totalItems))->
     end()->
     info('18.2 Go to next page')->
     info('18.2.1 Click on page 2')->
@@ -384,9 +386,40 @@ $browser->info('20. Filtering list')->
         
     info("20.2. The required fields can't be empty" )->
     get('company')->
-    click('.content form.form-filter input[type=submit]', $browser->getDataForEmptyFilter())->
+    click('.content form.form-filter input[type="submit"]', $browser->getDataForEmptyFilter())->
       with('form')->begin()->
         hasErrors(1)->
-        //isError('name', 'required')->
+        isError('name', 'required')->
+    end()->
+    
+    info('20.3. After a correct search, redirect to index action')->
+    get('company')->
+    click('.content form.form-filter input[type="submit"]', $browser->getDataFilterWithName('zzz'))->
+    with('form')->begin()->
+        hasErrors(0)->
+    end()->
+    followRedirect()->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+    end();
+
+$filterNameUnknown = "zzz";
+$browser->info('20.4. After a correct search, filters must be remembered')->
+    get('company')->
+    click('.content form.form-filter input[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
+    followRedirect()->
+    with('response')->begin()->
+        checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 1)->
+    end()->
+        
+    
+    info('20.5. Filters can be reseted (empty filters)')->
+    get('company')->
+    click('.content form.form-filter a.reset-filter')->
+
+    with('response')->begin()->
+        checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 0)->
+        //checkElement('.content table tfoot tr td', sprintf("#%d results#", $totalItems))->
     end()
 ;
