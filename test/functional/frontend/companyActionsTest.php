@@ -439,5 +439,13 @@ $browser->
     end()
 ;
 
+$browser->
+    info('21. Batch actions')->
+    info('21.1. Batch form must exists')->
+    get('company')->
+    with('response')->begin()->
+        checkElement('.content form.form-batch')->
+    end()
+;
     
     

@@ -31,6 +31,7 @@
                 <?php echo sesame_render_pager($pager, '@company'); ?>
                 <?php endif; ?>
 
+                <form action="#" method="post" class="form-batch">
                 <table cellspacing="0" class="zebra-striped">
                     <thead>
                         <tr>
@@ -56,6 +57,8 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                    
+                </form>
             <?php endif; ?>
         </div>
         
