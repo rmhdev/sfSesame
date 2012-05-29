@@ -41,15 +41,15 @@ class CompanyTestFunctional extends sfTestFunctional {
     }
     
     public function createAndSaveMultipleCompanies($count){
-        for($i = 1; $i<= $count; $i++){
+        for($i = 65; $i<= (65 + $count -1); $i++){
             $company = new Company();
-            $company->setName(sprintf($this->getCreatedCompanynamePattern(), $i));
+            $company->setName(sprintf($this->getCreatedCompanynamePattern(), chr($i)));
             $company->save();
         }
     }
     
     public function getCreatedCompanynamePattern(){
-        return "Auto company %d";
+        return "Auto company %s";
     }
     
     public function findFirstOrderedById($sortType = "asc"){

@@ -375,8 +375,6 @@ $browser->info('19.3. Links for sorting by columns')->
     end()
 ;
 
-// next tests: filtering, batch actions.
-
 $browser->info('20. Filtering list')->
     info('20.1. The filtering form must exist')->
     get('company?page=1&sort=id&sort_type=asc')->
@@ -386,7 +384,7 @@ $browser->info('20. Filtering list')->
     
     info('20.2. After a correct search, redirect to index action')->
     get('company')->
-    click('.content form.form-filter input[type="submit"]', $browser->getDataFilterWithName('zzz'))->
+    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName('zzz'))->
     with('form')->begin()->
         hasErrors(0)->
     end()->
@@ -399,7 +397,7 @@ $browser->info('20. Filtering list')->
 $filterNameUnknown = "zzz";
 $browser->info('20.3. After a correct search, filters must be remembered')->
     get('company')->
-    click('.content form.form-filter input[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
+    click('.content form.form-filter button[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 1)->
@@ -414,9 +412,20 @@ $browser->info('20.3. After a correct search, filters must be remembered')->
     
     info('20.5. Searching by unknown name returns an empty list')->
     get('company')->
-    click('.content form.form-filter input[type="submit"]', $browser->getDataFilterWithName($filterNameUnknown))->
+    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
         checkElement('.content:contains("No items in the list")')->
+    end()
+;
+
+$companyName = $browser->findFirstOrderedByName('asc')->getName();
+$browser->
+    info("20.6. Searching an existing and unique name returns a single result: {$companyName}")->
+    get('company')->
+    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($companyName))->
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content table tfoot tr td', "#1 results#")->
     end()
 ;

@@ -10,13 +10,13 @@
     
     <div class="row">
         <div class="span4">
-            <form action="<?php echo url_for('company_collection', array('action' => 'filter')); ?>" method="post" class="form-filter">
+            <form action="<?php echo url_for('company_collection', array('action' => 'filter')); ?>" method="post" class="form-filter form-stacked">
                 <fieldset>
-                    <legend>Filter results</legend>
+                    <legend>Search</legend>
                     <?php echo $formFilter->render(); ?>
                     <div class="actions">
-                        <input type="submit" value="Filter" class="btn success"/>
-                        <?php echo link_to('Reset', url_for('company_collection', array('action' => 'filter')), array('class' => 'reset-filter', 'method' => 'post', 'query_string' => '_reset')); ?>
+                        <button type="submit" class="btn success">Search</button>
+                        <?php echo link_to('Reset', url_for('company_collection', array('action' => 'filter')), array('class' => 'reset-filter btn', 'method' => 'post', 'query_string' => '_reset')); ?>
                     </div>
                 </fieldset>
             </form>
@@ -31,7 +31,7 @@
                 <?php echo sesame_render_pager($pager, '@company'); ?>
                 <?php endif; ?>
 
-                <table cellspacing="0">
+                <table cellspacing="0" class="zebra-striped">
                     <thead>
                         <tr>
                             <th><?php 
@@ -44,7 +44,7 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="2"><span><?php echo $pager->getNbResults(); ?> results</span> Page <?php echo sprintf("%d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
+                            <td colspan="2"><span><?php echo $pager->getNbResults(); ?> results</span> <?php echo sprintf("Page %d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
                         </tr>
                     </tfoot>
                     <tbody>
