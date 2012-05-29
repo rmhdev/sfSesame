@@ -445,7 +445,19 @@ $browser->
     get('company')->
     with('response')->begin()->
         checkElement('.content form.form-batch')->
+    end()->
+    
+    info('21.2. Submit batch form: must redirect to batch action')->
+    get('company')->
+    click('.content form.form-batch button[type="submit"]')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'batch')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
     end()
+        
 ;
     
     

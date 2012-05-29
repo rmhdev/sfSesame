@@ -31,7 +31,7 @@
                 <?php echo sesame_render_pager($pager, '@company'); ?>
                 <?php endif; ?>
 
-                <form action="#" method="post" class="form-batch">
+                <form action="<?php echo url_for('company_collection', array('action' => 'batch')); ?>" method="post" class="form-batch">
                 <table cellspacing="0" class="zebra-striped">
                     <thead>
                         <tr>
@@ -57,6 +57,8 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                    
+                    <button type="submit" class="btn success">Execute</button>
                     
                 </form>
             <?php endif; ?>
