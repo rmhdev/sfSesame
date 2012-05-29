@@ -147,13 +147,22 @@ $browser->
 ;
 
 $browser->
-    info('12. Edit button in the show action')->
+    info('12. Buttons in the show action')->
+    info('12.1. Edit button in the show action')->
     get(sprintf('/company/%d', $company->getPrimaryKey()))->
     click('Edit')->
-        with('request')->begin()->
-            isParameter('module', 'company')->
-            isParameter('action', 'edit')->
-            isParameter('id', $company->getPrimaryKey())->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'edit')->
+        isParameter('id', $company->getPrimaryKey())->
+    end()->
+        
+    info('12.2. back to list button in the show action')->
+    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    click('Back to list')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
     end()
 ;
 
@@ -429,3 +438,6 @@ $browser->
         checkElement('.content table tfoot tr td', "#1 results#")->
     end()
 ;
+
+    
+    
