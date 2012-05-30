@@ -162,5 +162,10 @@ class companyActions extends sfActions {
     protected function getFormFilter(array $filters) {
         return new CompanyFormFilter($filters);
     }
+    
+    
+    public function executeBatch(sfWebRequest $request) {
+        $this->redirect('@company');
+    }
 
 }
