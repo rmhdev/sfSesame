@@ -15,7 +15,7 @@
                     <legend>Search</legend>
                     <?php echo $formFilter->render(); ?>
                     <div class="actions">
-                        <button type="submit" class="btn success">Search</button>
+                        <button type="submit" class="btn info">Search</button>
                         <?php echo link_to('Reset', url_for('company_collection', array('action' => 'filter')), array('class' => 'reset-filter btn', 'method' => 'post', 'query_string' => '_reset')); ?>
                     </div>
                 </fieldset>
@@ -71,7 +71,7 @@
                     <select name="batch_action">
                         <option value="">- Select an action -</option>
                     </select>
-                    <button type="submit" class="btn success">Execute</button>
+                    <button type="submit" class="btn danger">Execute</button>
                     
                 </form>
             <?php endif; ?>
