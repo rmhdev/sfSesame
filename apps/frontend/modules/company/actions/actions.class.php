@@ -175,5 +175,12 @@ class companyActions extends sfActions {
         }
         $this->redirect('@company');
     }
+    
+    public function executeDelete(sfWebRequest $request) {
+        $this->getRoute()->getObject()->delete();
+        $this->getUser()->setFlash('success', 'The object has been deleted succesfully');
+        
+        $this->redirect('@company');
+    }
 
 }

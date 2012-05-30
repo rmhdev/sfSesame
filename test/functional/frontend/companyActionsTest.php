@@ -506,3 +506,26 @@ $browser->info('21.5. Validate batch form')->
         checkElement('.content div.alert-message.error', 1)->
     end()
 ;
+
+
+$companyToDelete = $browser->createAndSaveNewCompany("Company to delete");
+$idCompanyToDelete = $companyToDelete->getPrimaryKey();
+$browser->
+    info('Delete an object')->
+    call(sprintf('company/%d' ,$companyToDelete->getPrimaryKey()), 'delete')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'delete')->
+    end()->
+    with('doctrine')->begin()->
+        check('Company', array('id' => $idCompanyToDelete), false)->
+    end()->
+    followRedirect()->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+    end()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.success', 1)->
+    end()
+;
