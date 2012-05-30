@@ -56,7 +56,7 @@
                     <tbody>
                     <?php foreach ($pager->getResults() as $company) : ?>
                         <tr>
-                            <td class="col-batch"><input type="checkbox" name="ids[]" value="<?php echo $company->getId(); ?>"/></td>
+                            <td class="col-batch"><input type="checkbox" name="ids[]" value="<?php echo $company->getId(); ?>" id="ids_<?php echo $company->getId(); ?>"/></td>
                             <td class="col-id"><?php echo $company->getPrimaryKey(); ?></td>
                             <td class="col-name"><?php echo link_to($company->getName(), url_for('company_show', $company)); ?></td>
                         </tr>

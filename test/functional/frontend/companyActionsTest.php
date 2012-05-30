@@ -495,13 +495,14 @@ $browser->info('21.5. Validate batch form')->
     followRedirect()->
     with('response')->begin()->
         checkElement('.content div.alert-message.error', 1)->
-//    end()->
-//    
-//    info('21.5.2. User must select one action')->
-//    get('company?page=1&sort=id&sort_type=asc')->
-//    click('.content form.form-batch button[type="submit"]')->
-//    followRedirect()->
-//    with('response')->begin()->
-//        checkElement('.content div.alert-message.error', 1)->
+    end()->
+    
+    info('21.5.2. User must select one action')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    select(sprintf('ids_%d', $company->getId()))->
+    click('.content form.form-batch button[type="submit"]')->
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.error', 1)->
     end()
 ;

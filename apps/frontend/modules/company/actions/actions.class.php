@@ -169,6 +169,10 @@ class companyActions extends sfActions {
         if (!$ids) {
             $this->getUser()->setFlash('error', 'One or more items must be selected');
         }
+        $action = $request->getParameter('batch_action');
+        if (!$action) {
+            $this->getUser()->setFlash('error', 'An action must be selected');
+        }
         $this->redirect('@company');
     }
 
