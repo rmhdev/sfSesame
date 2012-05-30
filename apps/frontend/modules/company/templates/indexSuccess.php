@@ -22,6 +22,10 @@
             </form>
         </div>
         <div class="span8">
+            <?php if ($sf_user->hasFlash('error')) : ?>
+            <div class="alert-message error"><?php echo $sf_user->getFlash('error'); ?></div>
+            <?php endif; ?>
+            
             <?php if (!$pager->getNbResults()) : ?>
                 <div class="alert-message block-message warning">
                     <p><strong>No items in the list</strong> </p>
@@ -60,6 +64,9 @@
                     </tbody>
                 </table>
                     
+                    <select name="batch_action">
+                        <option value="">- Select an action -</option>
+                    </select>
                     <button type="submit" class="btn success">Execute</button>
                     
                 </form>

@@ -165,6 +165,10 @@ class companyActions extends sfActions {
     
     
     public function executeBatch(sfWebRequest $request) {
+        $ids = $request->getParameter('ids');
+        if (!$ids) {
+            $this->getUser()->setFlash('error', 'One or more items must be selected');
+        }
         $this->redirect('@company');
     }
 

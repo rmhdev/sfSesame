@@ -477,8 +477,31 @@ $browser->
         checkElement('.content table tbody input[type="checkbox"]', 10)->
         checkElement('.content table tbody td.col-batch input[name="ids[]"]', 10)->
         checkElement(sprintf('.content table tbody tr:first td.col-batch input[value="%d"]', $company->getId()), 1)->
-        
+    end()->
+    
+    info('21.5. For batching actions: user can select one action')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content form.form-batch select[name="batch_action"]', 1)->
+        checkElement('.content form.form-batch select option[value=""]', 1)->
     end()
 ;
-    
-    
+
+
+$browser->info('21.5. Validate batch form')->
+    info('21.5.1. User must select one or more checkboxes')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    click('.content form.form-batch button[type="submit"]')->
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.error', 1)->
+//    end()->
+//    
+//    info('21.5.2. User must select one action')->
+//    get('company?page=1&sort=id&sort_type=asc')->
+//    click('.content form.form-batch button[type="submit"]')->
+//    followRedirect()->
+//    with('response')->begin()->
+//        checkElement('.content div.alert-message.error', 1)->
+    end()
+;
