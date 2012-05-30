@@ -35,24 +35,26 @@
                 <table cellspacing="0" class="zebra-striped">
                     <thead>
                         <tr>
-                            <th><?php 
+                            <th class="col-batch">&nbsp;</th>
+                            <th class="col-id"><?php 
                             echo sesame_link_to_sort('Id', '@company', array('field' => 'id', 'sort' => $sort[0], 'sort_type' => $sort[1]));
                             ?></th>
-                            <th><?php 
+                            <th class="col-name"><?php 
                             echo sesame_link_to_sort('Name', '@company', array('field' => 'name', 'sort' => $sort[0], 'sort_type' => $sort[1]));
                             ?></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="2"><span><?php echo $pager->getNbResults(); ?> results</span> <?php echo sprintf("Page %d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
+                            <td colspan="3"><span><?php echo $pager->getNbResults(); ?> results</span> <?php echo sprintf("Page %d/%d", $pager->getPage(), $pager->getLastPage()); ?></td>
                         </tr>
                     </tfoot>
                     <tbody>
                     <?php foreach ($pager->getResults() as $company) : ?>
                         <tr>
-                            <td><?php echo $company->getPrimaryKey(); ?></td>
-                            <td><?php echo link_to($company->getName(), url_for('company_show', $company)); ?></td>
+                            <td class="col-batch"><input type="checkbox" /></td>
+                            <td class="col-id"><?php echo $company->getPrimaryKey(); ?></td>
+                            <td class="col-name"><?php echo link_to($company->getName(), url_for('company_show', $company)); ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

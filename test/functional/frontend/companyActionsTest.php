@@ -202,14 +202,14 @@ $browser->
         info('15.2. The table exists')->
         checkElement('.content table', true)->
         info('15.3. Show the ID of the company')->
-        checkElement(sprintf('.content table tbody tr:first td:first:contains(%d)', $company->getPrimaryKey()))->
+        checkElement(sprintf('.content table tbody tr:first td.col-id:contains(%d)', $company->getPrimaryKey()))->
         info('15.4. A link with the name of the company to show the company')->
         checkElement(sprintf('.content table tbody tr:first a:contains("%s")]', $company->getName()))->
         checkElement(sprintf('.content table tbody tr:first a[href]:contains("/company/%d")]', $company->getId()))->
         info('15.5. Every column has its name in the header of the table')->
-        checkElement('.content table thead tr:first th', true, array('count' => 2))->
-        checkElement('.content table thead tr:first th:nth-child(1):contains("Id")')->
-        checkElement('.content table thead tr:first th:nth-child(2):contains("Name")')->
+        checkElement('.content table thead tr:first th', true, array('count' => 3))->
+        checkElement('.content table thead tr:first th.col-id:contains("Id")')->
+        checkElement('.content table thead tr:first th.col-name:contains("Name")')->
     end()
 ;
 
@@ -327,7 +327,7 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
         $browser->info("19.1.{$i}. Default sort is {$sortColumn}, {$sortType}")->
             get("company?sort={$sortColumn}&sort_type={$sortType}")->
             with('response')->begin()->
-                checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)->
+                checkElement(".content table tbody tr:first td.col-{$sortColumn}", $expectedResult)->
             end()
         ;
     }
@@ -336,50 +336,50 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
 $browser->info('19.2. After sorting, the sort column and type must be remembered')->
     get('company')->
     with('response')->
-        checkElement(".content table tbody tr:first td:nth-child({$columnId})", $expectedResult)
+        checkElement(".content table tbody tr:first td.col-{$sortColumn}", $expectedResult)
 ;
 
 $browser->info('19.3. Links for sorting by columns')->
     info('19.3.1. Default sorting')->
     get('company?page=1&sort=id&sort_type=asc')->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=desc"))->
-        checkElement(sprintf('.content table thead tr:first th:nth-child(2) a[href*="%s"]', "/company?sort=name&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=desc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', "/company?sort=name&sort_type=asc"))->
     end()->
     
     info('19.3.2. Clicking on actually sorting column link changes sort type')->
-    click('.content table thead tr:first th:nth-child(1) a')->
+    click('.content table thead tr:first th.col-id a')->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
     end()->
     
     info('19.3.3. Clicking on not actually sorting column link sets sort type to asc')->
-    click('.content table thead tr:first th:nth-child(2) a')->
+    click('.content table thead tr:first th.col-name a')->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th:nth-child(1) a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
-        checkElement(sprintf('.content table thead tr:first th:nth-child(2) a[href*="%s"]', "/company?sort=name&sort_type=desc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', "/company?sort=name&sort_type=desc"))->
     end()->
         
     info('19.3.4. Links must indicate which column is beeing sorted')->
     get('company?sort=id&sort_type=asc')->
     with('response')->begin()->
-        checkElement('.content table thead tr:first th:nth-child(1) a:contains("asc")')->
+        checkElement('.content table thead tr:first th.col-id a:contains("asc")')->
         checkElement('.content table thead tr:first a:contains("asc")', 1)->
     end()->
     get('company?sort=id&sort_type=desc')->
     with('response')->begin()->
-        checkElement('.content table thead tr:first th:nth-child(1) a:contains("desc")')->
+        checkElement('.content table thead tr:first th.col-id a:contains("desc")')->
         checkElement('.content table thead tr:first a:contains("desc")', 1)->
     end()->
         
     get('company?sort=name&sort_type=asc')->
     with('response')->begin()->
-        checkElement('.content table thead tr:first th:nth-child(2) a:contains("asc")')->
+        checkElement('.content table thead tr:first th.col-name a:contains("asc")')->
         checkElement('.content table thead tr:first a:contains("asc")', 1)->
     end()->
     get('company?sort=name&sort_type=desc')->
     with('response')->begin()->
-        checkElement('.content table thead tr:first th:nth-child(2) a:contains("desc")')->
+        checkElement('.content table thead tr:first th.col-name a:contains("desc")')->
         checkElement('.content table thead tr:first a:contains("desc")', 1)->
     end()
 ;
@@ -441,6 +441,8 @@ $browser->
 
 $browser->
     info('21. Batch actions')->
+    info('21.0 reset filters')->
+    click('.content form.form-filter a.reset-filter')->
     
     info('21.1. Batch form must exists')->
     get('company')->
@@ -463,6 +465,14 @@ $browser->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'index')->
+    end()
+;
+
+$browser->
+    info('21.4. For batching actions: user can select one or more items from list')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content table tbody input[type="checkbox"]', 10)->
     end()
 ;
     
