@@ -10,6 +10,12 @@
     
     <div class="row">
         <div class="span4">
+            <div class="clearfix">
+            <?php echo link_to('Create new company', '@company_new', array('class' => 'btn success')); ?>
+                
+            </div>
+            <br />
+            
             <form action="<?php echo url_for('company_collection', array('action' => 'filter')); ?>" method="post" class="form-filter form-stacked">
                 <fieldset>
                     <legend>Search</legend>

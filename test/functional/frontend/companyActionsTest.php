@@ -176,6 +176,14 @@ $browser->
     with('response')->begin()->
         isStatusCode(200)->
         checkElement('.content .page-header h1', 'Companies')->
+    end()->
+    
+    info('13.1. Link to create new company')->
+    get('company')->
+    click('Create new company')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'new')->
     end()
 ;
 
