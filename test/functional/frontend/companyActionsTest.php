@@ -468,11 +468,16 @@ $browser->
     end()
 ;
 
+$company = $browser->findFirstOrderedById('asc');
+
 $browser->
     info('21.4. For batching actions: user can select one or more items from list')->
     get('company?page=1&sort=id&sort_type=asc')->
     with('response')->begin()->
         checkElement('.content table tbody input[type="checkbox"]', 10)->
+        checkElement('.content table tbody td.col-batch input[name="ids[]"]', 10)->
+        checkElement(sprintf('.content table tbody tr:first td.col-batch input[value="%d"]', $company->getId()), 1)->
+        
     end()
 ;
     
