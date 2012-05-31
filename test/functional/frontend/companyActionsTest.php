@@ -543,11 +543,20 @@ $browser->info('21.5. Validate batch form')->
     end()
 ;
 
+$companyToDelete = $browser->createAndSaveNewCompany('Company to delete: unknown batch action');
+$idCompanyToDelete = $companyToDelete->getPrimaryKey();
+$batchData = array('batch_action' => 'batchUnknown', 'ids' => array($idCompanyToDelete));
+$browser->info('21.5.4. Check that received batch action exists')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    click('.content form.form-batch button[type="submit"]', $batchData)->
+    throwsException()
+;
+
 $companyToDelete = $browser->createAndSaveNewCompany("AAA Company to delete");
 $idCompanyToDelete = $companyToDelete->getPrimaryKey();
 $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyToDelete));
-$browser->info('21.5.4. Batch action: delete')->
-    get('company?page=1&sort=id&sort_type=desc')->
+$browser->info('21.6. Batch action: delete')->
+    get('company?page=1&sort=id&sort_type=asc')->
     with('response')->begin()->
         checkElement('.content form.form.batch select option[value="batchDelete"]')->
     end()->
@@ -562,7 +571,3 @@ $browser->info('21.5.4. Batch action: delete')->
         check('Company', array('id' => $idCompanyToDelete), false)->
     end()
 ;
-
-// nexts tests in batch: unknown action, unknow company id.
-
-

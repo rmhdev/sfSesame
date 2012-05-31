@@ -181,6 +181,11 @@ class companyActions extends sfActions {
         $action = $request->getParameter('batch_action');
         if (!$action) {
             $this->getUser()->setFlash('error', 'An action must be selected');
+            $this->redirect('@company');
+        }
+        
+        if ($action != 'batchDelete') {
+            throw new InvalidArgumentException(sprintf('You must create a "%s" method', $action));
         }
         
         $this->batchDelete($this->retrieveCompaniesByIds($ids));
