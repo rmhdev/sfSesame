@@ -76,7 +76,7 @@ class companyActions extends sfActions {
                 return sfView::SUCCESS;
             }
             if ($request->hasParameter('save_and_add')){
-                $this->redirect('company/new');
+                $this->redirect('@company_new');
             } else {
                 $this->redirect(array('sf_route' => 'company_edit', 'sf_subject' => $company));
             }
@@ -93,11 +93,11 @@ class companyActions extends sfActions {
         if ((null !== $sortField) && (null === $sortType)) {
             $sortType = 'asc';
         }
-        $this->getUser()->setAttribute('company.sort', array($sortField, $sortType), $this->getNameSpace());
+        $this->setUserAttribute('sort', array($sortField, $sortType));
     }
     
     protected function getSort() {
-        $sort = $this->getUser()->getAttribute('company.sort', null, $this->getNameSpace());
+        $sort = $this->getUserAttribute('sort');
         if ($sort === null) {
             $sort = $this->getDefaultSort();
             $this->setSort($sort[0], $sort[1]);
@@ -120,11 +120,11 @@ class companyActions extends sfActions {
     }
     
     protected function getPage() {
-        return $this->getUser()->getAttribute('company.page', 1, $this->getNameSpace());
+        return $this->getUserAttribute('page', 1);
     }
     
     protected function setPage($page = 1) {
-        $this->getUser()->setAttribute('company.page', $page, $this->getNameSpace());
+        $this->setUserAttribute('page', $page);
     }
     
     protected function buildQuery() {
@@ -148,11 +148,11 @@ class companyActions extends sfActions {
     }
     
     protected function setFilters(array $filters) {
-        $this->getUser()->setAttribute('company.filters', $filters, $this->getNameSpace());
+        $this->setUserAttribute('filters', $filters);
     }
     
     protected function getFilters() {
-        return $this->getUser()->getAttribute('company.filters', $this->getDefaultFilters(), $this->getNameSpace());
+        return $this->getUserAttribute('filters', $this->getDefaultFilters());
     }
     
     protected function getDefaultFilters() {
@@ -165,31 +165,43 @@ class companyActions extends sfActions {
     
     
     public function executeBatch(sfWebRequest $request) {
+        $this->checkCSRFProtectionForRequest($request);
+        $this->checkBatchKeyValues($request);
+        $method = $this->getMethodIfCorrectBatchAction($request);
+        
+        $this->$method($request);
+        
+        $this->redirectToIndex();
+    }
+    
+    protected function checkCSRFProtectionForRequest(sfWebRequest $request) {
         try {
             $request->checkCSRFProtection();
         } catch (Exception $e) {
             $this->getUser()->setFlash('error', $e->getMessage());
             $this->redirectToIndex();
         }
-        
+    }
+    
+    protected function checkBatchKeyValues(sfWebRequest $request) {
         $ids = $request->getParameter('ids');
         if (!$ids) {
             $this->getUser()->setFlash('error', 'One or more items must be selected');
             $this->redirectToIndex();
         }
+        $this->validateBatchKeyValuesExists($ids);
         
+        return $ids;
+    }
+    
+    protected function getMethodIfCorrectBatchAction(sfWebRequest $request) {
         $batchAction = $request->getParameter('batch_action');
         if (!$batchAction) {
             $this->getUser()->setFlash('error', 'An action must be selected');
             $this->redirectToIndex();
         }
         
-        $method = $this->getExistingMethodForBatchAction($batchAction);
-        $this->validateBatchIdsExists($ids);
-        
-        $this->$method($request);
-        
-        $this->redirectToIndex();
+        return $this->getExistingMethodForBatchAction($batchAction);
     }
     
     protected function getExistingMethodForBatchAction($batchAction) {
@@ -202,7 +214,7 @@ class companyActions extends sfActions {
         return $method;
     }
     
-    protected function validateBatchIdsExists($ids) {
+    protected function validateBatchKeyValuesExists($ids) {
         $validator = new sfValidatorDoctrineChoice(array(
             'multiple'  => true,
             'model'     => $this->getModelName()
@@ -214,8 +226,6 @@ class companyActions extends sfActions {
             $this->redirectToIndex();
         }
     }
-   
-    
     
     protected function executeBatchDelete(sfWebRequest $request) {
         $ids = $request->getParameter('ids');
@@ -247,8 +257,25 @@ class companyActions extends sfActions {
         return "Company";
     }
     
+    protected function setUserAttribute($field, $value = null) {
+        $this->getUser()->setAttribute(
+            sprintf('company.%s', $field), 
+            $value, 
+            $this->getNameSpace()
+        );
+    }
+    
+    protected function getUserAttribute($field, $defaultValue = null) {
+        return $this->getUser()->getAttribute(
+            sprintf('company.%s', $field), 
+            $defaultValue, 
+            $this->getNameSpace()
+        );
+    }
+    
     protected function getNameSpace() {
         return 'admin_module';
     }
-
+    
 }
+
