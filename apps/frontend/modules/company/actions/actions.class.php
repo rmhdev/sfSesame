@@ -188,6 +188,14 @@ class companyActions extends sfActions {
         if (!method_exists($this, $method)) {
             throw new InvalidArgumentException(sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
         }
+        
+        $validator = new sfValidatorDoctrineChoice(array(
+            'multiple'  => true,
+            'model'     => 'Company'
+        ));
+        $ids = $validator->clean($ids);
+        
+        
         $this->$method($request);
         
         $this->redirect('@company');

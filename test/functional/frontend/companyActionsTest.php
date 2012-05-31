@@ -571,3 +571,13 @@ $browser->info('21.6. Batch action: delete')->
         check('Company', array('id' => $idCompanyToDelete), false)->
     end()
 ;
+
+
+$company = $browser->findFirstOrderedById('desc');
+$idCompanyNonExisting = $company->getId() + 1;
+$batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyNonExisting));
+$browser->info('21.5.5. Check that received ids are correct')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    click('.content form.form-batch button[type="submit"]', $batchData)->
+    throwsException()
+;
