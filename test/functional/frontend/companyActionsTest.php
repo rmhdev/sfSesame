@@ -502,7 +502,7 @@ $browser->info('21.5. Validate batch form')->
     click('.content form.form-batch button[type="submit"]')->
     followRedirect()->
     with('response')->begin()->
-        checkElement('.content div.alert-message.error', 1)->
+        checkElement('.content div.alert-message.error', "#items#")->
     end()->
     
     info('21.5.2. User must select one action')->
@@ -511,7 +511,13 @@ $browser->info('21.5. Validate batch form')->
     click('.content form.form-batch button[type="submit"]')->
     followRedirect()->
     with('response')->begin()->
-        checkElement('.content div.alert-message.error', 1)->
+        checkElement('.content div.alert-message.error', "#action#")->
+    end()->
+    
+    info('21.5.3. Check CSRF protection')->
+    get('company?page=1&sort=id&sort_type=asc')->
+    with('response')->begin()->
+        checkElement('.content form.form-batch input[name="_csrf_token"][value]')->
     end()
 ;
 

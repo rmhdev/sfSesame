@@ -79,6 +79,11 @@
                     </select>
                     <button type="submit" class="btn danger">Execute</button>
                     
+                    <?php $form = new BaseForm();?>
+                    <?php if ($form->isCSRFProtected()) : ?>
+                    <input type="hidden" name="<?php echo $form->getCSRFFieldName(); ?>" value="<?php echo $form->getCSRFToken(); ?>" />
+                    <?php endif; ?>
+                    
                 </form>
             <?php endif; ?>
         </div>

@@ -165,9 +165,17 @@ class companyActions extends sfActions {
     
     
     public function executeBatch(sfWebRequest $request) {
+        try {
+            $request->checkCSRFProtection();
+        } catch (Exception $e) {
+            $this->getUser()->setFlash('error', $e->getMessage());
+            $this->redirect('@company');
+        }
+        
         $ids = $request->getParameter('ids');
         if (!$ids) {
             $this->getUser()->setFlash('error', 'One or more items must be selected');
+            $this->redirect('@company');
         }
         $action = $request->getParameter('batch_action');
         if (!$action) {
