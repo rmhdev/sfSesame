@@ -5,6 +5,10 @@
         <div class="alert-message error"><?php echo $sf_user->getFlash('error'); ?></div>
         <?php endif; ?>
         
+        <?php if ($sf_user->hasFlash('success')) : ?>
+        <div class="alert-message success"><?php echo $sf_user->getFlash('success'); ?></div>
+        <?php endif; ?>
+        
         <?php echo form_tag_for($form, '@company'); ?>
             <fieldset>
                 <legend><?php echo $form->isNew() ? 'Create a new company' : 'Edit company'?></legend>

@@ -79,11 +79,16 @@ class companyActions extends sfActions {
         $form->bind($request->getParameter($form->getName()));
         if ($form->isValid()){
             try {
+                $isNew = $form->isNew();
                 $company = $form->save();
             } catch (Doctrine_Validator_Exception $e){
                 $this->getUser()->setFlash('error', $e->getMessage());
                 return sfView::SUCCESS;
             }
+            $this->getUser()->setFlash('success', 
+                $isNew ? 'The item has been created successfully' : 'The item has been updated successfully', 
+                true
+            );
             if ($request->hasParameter('save_and_add')){
                 $this->redirect('@company_new');
             } else {

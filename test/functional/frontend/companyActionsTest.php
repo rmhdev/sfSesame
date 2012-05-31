@@ -29,7 +29,6 @@ $browser->
     with('response')->begin()->
         checkElement('.content div.alert-message.error', "#check#")->
     end()
-    
 ;
 
 
@@ -37,10 +36,9 @@ $browser->
     info("3. A name with less than 3 can't be saved")->
     get('/company/new')->
     click('button_create', $browser->getDataFormWithName('a'))->
-        with('form')->begin()->
-            hasErrors(1)->
-            isError('name', 'min_length')->
-    
+    with('form')->begin()->
+        hasErrors(1)->
+        isError('name', 'min_length')->
     end()
 ;
 
@@ -49,9 +47,9 @@ $browser->
     info("4. A name greater than 50 can't be saved")->
     get('/company/new')->
     click('button_create', $browser->getDataFormWithName($longName))->
-        with('form')->begin()->
-            hasErrors(1)->
-            isError('name', 'max_length')->
+    with('form')->begin()->
+        hasErrors(1)->
+        isError('name', 'max_length')->
     end()
 ;
 
@@ -59,15 +57,18 @@ $browser->
     info("5. A name with length between 3 and 50 is correct")->
     get('/company/new')->
     click('button_create', $browser->getDataFormWithName('Company Inc'))->
-        with('form')->begin()->
-            hasErrors(false)->
+    with('form')->begin()->
+        hasErrors(false)->
     end()->
     info('5 a. After create, redirect to edit')->
     followRedirect()->
-        with('request')->begin()->
-            isParameter('module', 'company')->
-            isParameter('action', 'edit')->
-            isParameter('id', $browser->findOneByName('Company Inc')->getPrimaryKey())->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'edit')->
+        isParameter('id', $browser->findOneByName('Company Inc')->getPrimaryKey())->
+    end()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.success', "#successfully#")->
     end()
 ;
 
@@ -75,10 +76,10 @@ $browser->
     info("6. The created company must be in the BD")->
     get('/company/new')->
     click('button_create', $browser->getDataFormWithName('My company'))->
-        with('doctrine')->begin()->
+    with('doctrine')->begin()->
         check('Company', array(
             'name' => 'My company'
-          ))->
+        ))->
     end()
 ;
 
