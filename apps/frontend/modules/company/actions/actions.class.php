@@ -177,20 +177,29 @@ class companyActions extends sfActions {
             $this->getUser()->setFlash('error', 'One or more items must be selected');
             $this->redirect('@company');
         }
+        
         $action = $request->getParameter('batch_action');
         if (!$action) {
             $this->getUser()->setFlash('error', 'An action must be selected');
         }
-        $companies = Doctrine_Query::create()
+        
+        $this->batchDelete($this->retrieveCompaniesByIds($ids));
+        $this->getUser()->setFlash('success', 'The selected objects have been deleted');
+        
+        $this->redirect('@company');
+    }
+   
+    protected function retrieveCompaniesByIds($ids) {
+        return Doctrine_Query::create()
             ->from('Company')
             ->whereIn('id', $ids)
             ->execute();
+    }
+    
+    protected function batchDelete(Doctrine_Collection $companies) {
         foreach ($companies as $company) {
             $company->delete();
         }
-        
-        $this->getUser()->setFlash('success', 'The selected objects have been deleted');
-        $this->redirect('@company');
     }
     
     public function executeDelete(sfWebRequest $request) {
