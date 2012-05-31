@@ -65,6 +65,7 @@
                     </tfoot>
                     <tbody>
                     <?php foreach ($pager->getResults() as $company) : ?>
+
                         <tr>
                             <td class="col-batch"><input type="checkbox" name="ids[]" value="<?php echo $company->getId(); ?>" id="ids_<?php echo $company->getId(); ?>"/></td>
                             <td class="col-id"><?php echo $company->getPrimaryKey(); ?></td>
@@ -76,6 +77,7 @@
                     
                     <select name="batch_action">
                         <option value="">- Select an action -</option>
+                        <option value="batchDelete">Delete selected items</option>
                     </select>
                     <button type="submit" class="btn danger">Execute</button>
                     

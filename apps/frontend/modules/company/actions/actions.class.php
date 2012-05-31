@@ -181,6 +181,15 @@ class companyActions extends sfActions {
         if (!$action) {
             $this->getUser()->setFlash('error', 'An action must be selected');
         }
+        $companies = Doctrine_Query::create()
+            ->from('Company')
+            ->whereIn('id', $ids)
+            ->execute();
+        foreach ($companies as $company) {
+            $company->delete();
+        }
+        
+        $this->getUser()->setFlash('success', 'The selected objects have been deleted');
         $this->redirect('@company');
     }
     

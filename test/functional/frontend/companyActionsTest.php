@@ -446,6 +446,28 @@ $browser->
         checkElement('.content table tfoot tr td', "#1 results#")->
     end()
 ;
+    
+$companyToDelete = $browser->createAndSaveNewCompany("Company to delete");
+$idCompanyToDelete = $companyToDelete->getPrimaryKey();
+$browser->
+    info('Delete an object')->
+    call(sprintf('company/%d' ,$idCompanyToDelete), 'delete')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'delete')->
+    end()->
+    with('doctrine')->begin()->
+        check('Company', array('id' => $idCompanyToDelete), false)->
+    end()->
+    followRedirect()->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+    end()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.success', 1)->
+    end()
+;
 
 $browser->
     info('21. Batch actions')->
@@ -521,25 +543,26 @@ $browser->info('21.5. Validate batch form')->
     end()
 ;
 
-
-$companyToDelete = $browser->createAndSaveNewCompany("Company to delete");
+$companyToDelete = $browser->createAndSaveNewCompany("AAA Company to delete");
 $idCompanyToDelete = $companyToDelete->getPrimaryKey();
-$browser->
-    info('Delete an object')->
-    call(sprintf('company/%d' ,$companyToDelete->getPrimaryKey()), 'delete')->
-    with('request')->begin()->
-        isParameter('module', 'company')->
-        isParameter('action', 'delete')->
+$batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyToDelete));
+$browser->info('21.5.4. Batch action: delete')->
+    get('company?page=1&sort=id&sort_type=desc')->
+    with('response')->begin()->
+        checkElement('.content form.form.batch select option[value="batchDelete"]')->
     end()->
+    click('.content form.form-batch button[type="submit"]', $batchData)->
+    followRedirect()->
+    with('response')->begin()->
+        isStatusCode(200)->
+        checkElement('.content div.alert-message.success', "#deleted#")->
+    end()->
+    
     with('doctrine')->begin()->
         check('Company', array('id' => $idCompanyToDelete), false)->
-    end()->
-    followRedirect()->
-    with('request')->begin()->
-        isParameter('module', 'company')->
-        isParameter('action', 'index')->
-    end()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.success', 1)->
     end()
 ;
+
+// nexts tests in batch: unknown action, unknow company id.
+
+
