@@ -12,11 +12,8 @@ class companyActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         if ($request->getParameter('sort')){
             $sort = $request->getParameter('sort');
-            if (!$this->isValidSortColumn($sort)) {
-                $this->getUser()->setFlash('error', sprintf("Can't sort by unknown column '%s'", $sort));
-                $this->redirectToIndex();
-            }
-            $this->setSort($request->getParameter('sort'), $request->getParameter('sort_type'));
+            $this->checkSortColumnName($sort);
+            $this->setSort($sort, $request->getParameter('sort_type'));
         }
         if ($request->getParameter('page')) {
             $this->setPage($request->getParameter('page'));
@@ -24,6 +21,13 @@ class companyActions extends sfActions {
         $this->pager        = $this->getPager();
         $this->sort         = $this->getSort();
         $this->formFilter   = $this->getFormFilter($this->getFilters());
+    }
+    
+    protected function checkSortColumnName($columnName){
+        if (!$this->isValidSortColumn($columnName)) {
+            $this->getUser()->setFlash('error', sprintf("Can't sort by unknown column '%s'", $columnName));
+            $this->redirectToIndex();
+        }
     }
     
     public function executeFilter(sfWebRequest $request) {
@@ -86,7 +90,7 @@ class companyActions extends sfActions {
                 $this->redirect(array('sf_route' => 'company_edit', 'sf_subject' => $company));
             }
         } else {
-            //
+            $this->getUser()->setFlash('error', 'Please check the values entered in the form', false);
         }
     }
 

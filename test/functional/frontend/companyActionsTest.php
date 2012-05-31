@@ -22,10 +22,14 @@ $browser->
     info("2. The required fields can't be empty" )->
     get('/company/new')->
     click('button_create', $browser->getDataForEmptyForm())->
-      with('form')->begin()->
+    with('form')->begin()->
         hasErrors(1)->
         isError('name', 'required')->
+    end()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.error', "#check#")->
     end()
+    
 ;
 
 
