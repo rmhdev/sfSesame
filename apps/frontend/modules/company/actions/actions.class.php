@@ -195,7 +195,8 @@ class companyActions extends sfActions {
     protected function getExistingMethodForBatchAction($batchAction) {
         $method = sprintf("execute%s", ucfirst($batchAction));
         if (!method_exists($this, $method)) {
-            throw new InvalidArgumentException(sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
+            $this->getUser()->setFlash('error', sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
+            $this->redirect('@company');
         }
         
         return $method;
@@ -206,7 +207,12 @@ class companyActions extends sfActions {
             'multiple'  => true,
             'model'     => 'Company'
         ));
-        $validator->clean($ids);
+        try {
+            $validator->clean($ids);
+        } catch (sfValidatorError $e) {
+            $this->getUser()->setFlash('error', 'One or more selected items do not exist.');
+            $this->redirect('@company');
+        }
     }
    
     

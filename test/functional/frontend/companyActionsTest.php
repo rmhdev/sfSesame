@@ -549,7 +549,11 @@ $batchData = array('batch_action' => 'batchUnknown', 'ids' => array($idCompanyTo
 $browser->info('21.5.4. Check that received batch action exists')->
     get('company?page=1&sort=id&sort_type=asc')->
     click('.content form.form-batch button[type="submit"]', $batchData)->
-    throwsException()
+    //throwsException()
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.error', "#create#")->
+    end()
 ;
 
 $company = $browser->findFirstOrderedById('desc');
@@ -558,7 +562,10 @@ $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyNon
 $browser->info('21.5.5. Check that received ids are correct')->
     get('company?page=1&sort=id&sort_type=asc')->
     click('.content form.form-batch button[type="submit"]', $batchData)->
-    throwsException()
+    followRedirect()->
+    with('response')->begin()->
+        checkElement('.content div.alert-message.error', "#exist#")->
+    end()
 ;
 
 $companyToDelete = $browser->createAndSaveNewCompany("AAA Company to delete");
