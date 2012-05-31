@@ -11,6 +11,11 @@ class companyActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         if ($request->getParameter('sort')){
+            $sort = $request->getParameter('sort');
+            if (!$this->isValidSortColumn($sort)) {
+                $this->getUser()->setFlash('error', sprintf("Can't sort by unknown column '%s'", $sort));
+                $this->redirectToIndex();
+            }
             $this->setSort($request->getParameter('sort'), $request->getParameter('sort_type'));
         }
         if ($request->getParameter('page')) {
@@ -93,7 +98,13 @@ class companyActions extends sfActions {
         if ((null !== $sortField) && (null === $sortType)) {
             $sortType = 'asc';
         }
+        
+        
         $this->setUserAttribute('sort', array($sortField, $sortType));
+    }
+    
+    protected function isValidSortColumn($columnName) {
+        return Doctrine_Core::getTable($this->getModelName())->hasColumn($columnName);
     }
     
     protected function getSort() {

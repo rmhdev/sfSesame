@@ -392,6 +392,15 @@ $browser->info('19.3. Links for sorting by columns')->
     end()
 ;
 
+$browser->info("19.4. Can't sort using unknown columns")->
+    get('company?sort=unknown&sort_type=asc')->
+    followRedirect()->
+    with('response')->begin()->
+        isStatusCode(200)->
+        checkElement('.content div.alert-message.error', "#unknown#")->
+    end()
+;
+
 $browser->info('20. Filtering list')->
     info('20.1. The filtering form must exist')->
     get('company?page=1&sort=id&sort_type=asc')->
