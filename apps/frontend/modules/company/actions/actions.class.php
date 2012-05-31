@@ -178,27 +178,35 @@ class companyActions extends sfActions {
             $this->redirect('@company');
         }
         
-        $action = $request->getParameter('batch_action');
-        if (!$action) {
+        $batchAction = $request->getParameter('batch_action');
+        if (!$batchAction) {
             $this->getUser()->setFlash('error', 'An action must be selected');
             $this->redirect('@company');
         }
         
-        $method = sprintf("execute%s", ucfirst($action));
-        if (!method_exists($this, $method)) {
-            throw new InvalidArgumentException(sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
-        }
-        
-        $validator = new sfValidatorDoctrineChoice(array(
-            'multiple'  => true,
-            'model'     => 'Company'
-        ));
-        $ids = $validator->clean($ids);
-        
+        $method = $this->getExistingMethodForBatchAction($batchAction);
+        $this->validateBatchIdsExists($ids);
         
         $this->$method($request);
         
         $this->redirect('@company');
+    }
+    
+    protected function getExistingMethodForBatchAction($batchAction) {
+        $method = sprintf("execute%s", ucfirst($batchAction));
+        if (!method_exists($this, $method)) {
+            throw new InvalidArgumentException(sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
+        }
+        
+        return $method;
+    }
+    
+    protected function validateBatchIdsExists($ids) {
+        $validator = new sfValidatorDoctrineChoice(array(
+            'multiple'  => true,
+            'model'     => 'Company'
+        ));
+        $validator->clean($ids);
     }
    
     
