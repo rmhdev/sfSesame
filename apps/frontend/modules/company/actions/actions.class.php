@@ -25,13 +25,13 @@ class companyActions extends sfActions {
         $this->setPage(1);
         if ($request->hasParameter('_reset')) {
             $this->setFilters(array());
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         $this->formFilter = $this->getFormFilter($this->getFilters());
         $this->formFilter->bind($request->getParameter($this->formFilter->getName()));
         if ($this->formFilter->isValid()) {
             $this->setFilters($this->formFilter->getValues());
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         $this->pager    = $this->getPager();
         $this->sort     = $this->getSort();
@@ -93,11 +93,11 @@ class companyActions extends sfActions {
         if ((null !== $sortField) && (null === $sortType)) {
             $sortType = 'asc';
         }
-        $this->getUser()->setAttribute('company.sort', array($sortField, $sortType), 'admin_module');
+        $this->getUser()->setAttribute('company.sort', array($sortField, $sortType), $this->getNameSpace());
     }
     
     protected function getSort() {
-        $sort = $this->getUser()->getAttribute('company.sort', null, 'admin_module');
+        $sort = $this->getUser()->getAttribute('company.sort', null, $this->getNameSpace());
         if ($sort === null) {
             $sort = $this->getDefaultSort();
             $this->setSort($sort[0], $sort[1]);
@@ -111,7 +111,7 @@ class companyActions extends sfActions {
     }
     
     protected function getPager(){
-        $pager = new sfDoctrinePager('Company', 10);
+        $pager = new sfDoctrinePager($this->getModelName(), 10);
         $pager->setQuery($this->buildQuery());
         $pager->setPage($this->getPage());
         $pager->init();
@@ -120,11 +120,11 @@ class companyActions extends sfActions {
     }
     
     protected function getPage() {
-        return $this->getUser()->getAttribute('company.page', 1, 'admin_module');
+        return $this->getUser()->getAttribute('company.page', 1, $this->getNameSpace());
     }
     
     protected function setPage($page = 1) {
-        $this->getUser()->setAttribute('company.page', $page, 'admin_module');
+        $this->getUser()->setAttribute('company.page', $page, $this->getNameSpace());
     }
     
     protected function buildQuery() {
@@ -148,11 +148,11 @@ class companyActions extends sfActions {
     }
     
     protected function setFilters(array $filters) {
-        $this->getUser()->setAttribute('company.filters', $filters, 'admin_module');
+        $this->getUser()->setAttribute('company.filters', $filters, $this->getNameSpace());
     }
     
     protected function getFilters() {
-        return $this->getUser()->getAttribute('company.filters', $this->getDefaultFilters(), 'admin_module');
+        return $this->getUser()->getAttribute('company.filters', $this->getDefaultFilters(), $this->getNameSpace());
     }
     
     protected function getDefaultFilters() {
@@ -169,19 +169,19 @@ class companyActions extends sfActions {
             $request->checkCSRFProtection();
         } catch (Exception $e) {
             $this->getUser()->setFlash('error', $e->getMessage());
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         
         $ids = $request->getParameter('ids');
         if (!$ids) {
             $this->getUser()->setFlash('error', 'One or more items must be selected');
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         
         $batchAction = $request->getParameter('batch_action');
         if (!$batchAction) {
             $this->getUser()->setFlash('error', 'An action must be selected');
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         
         $method = $this->getExistingMethodForBatchAction($batchAction);
@@ -189,14 +189,14 @@ class companyActions extends sfActions {
         
         $this->$method($request);
         
-        $this->redirect('@company');
+        $this->redirectToIndex();
     }
     
     protected function getExistingMethodForBatchAction($batchAction) {
         $method = sprintf("execute%s", ucfirst($batchAction));
         if (!method_exists($this, $method)) {
             $this->getUser()->setFlash('error', sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
         
         return $method;
@@ -205,13 +205,13 @@ class companyActions extends sfActions {
     protected function validateBatchIdsExists($ids) {
         $validator = new sfValidatorDoctrineChoice(array(
             'multiple'  => true,
-            'model'     => 'Company'
+            'model'     => $this->getModelName()
         ));
         try {
             $validator->clean($ids);
         } catch (sfValidatorError $e) {
             $this->getUser()->setFlash('error', 'One or more selected items do not exist.');
-            $this->redirect('@company');
+            $this->redirectToIndex();
         }
     }
    
@@ -227,7 +227,7 @@ class companyActions extends sfActions {
     
     protected function retrieveCompaniesByIds($ids) {
         return Doctrine_Query::create()
-            ->from('Company')
+            ->from($this->getModelName())
             ->whereIn('id', $ids)
             ->execute();
     }
@@ -236,7 +236,19 @@ class companyActions extends sfActions {
         $this->getRoute()->getObject()->delete();
         $this->getUser()->setFlash('success', 'The object has been deleted succesfully');
         
+        $this->redirectToIndex();
+    }
+    
+    protected function redirectToIndex() {
         $this->redirect('@company');
+    }
+    
+    protected function getModelName() {
+        return "Company";
+    }
+    
+    protected function getNameSpace() {
+        return 'admin_module';
     }
 
 }
