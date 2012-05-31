@@ -184,27 +184,30 @@ class companyActions extends sfActions {
             $this->redirect('@company');
         }
         
-        if ($action != 'batchDelete') {
-            throw new InvalidArgumentException(sprintf('You must create a "%s" method', $action));
+        $method = sprintf("execute%s", ucfirst($action));
+        if (!method_exists($this, $method)) {
+            throw new InvalidArgumentException(sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
         }
-        
-        $this->batchDelete($this->retrieveCompaniesByIds($ids));
-        $this->getUser()->setFlash('success', 'The selected objects have been deleted');
+        $this->$method($request);
         
         $this->redirect('@company');
     }
    
+    
+    
+    protected function executeBatchDelete(sfWebRequest $request) {
+        $ids = $request->getParameter('ids');
+        foreach ($this->retrieveCompaniesByIds($ids) as $company) {
+            $company->delete();
+        }
+        $this->getUser()->setFlash('success', 'The selected objects have been deleted');
+    }
+    
     protected function retrieveCompaniesByIds($ids) {
         return Doctrine_Query::create()
             ->from('Company')
             ->whereIn('id', $ids)
             ->execute();
-    }
-    
-    protected function batchDelete(Doctrine_Collection $companies) {
-        foreach ($companies as $company) {
-            $company->delete();
-        }
     }
     
     public function executeDelete(sfWebRequest $request) {
