@@ -18,6 +18,9 @@ $browser->info('1. Display the create project form')->
 
 $browser->info("2. The required fields can't be empty")->
     callGetActionNew()->
-    click('button_create', $browser->getDataForEmptyForm())
+    click('button_create', $browser->getDataForEmptyForm())->
+    with('form')->begin()->
+        hasErrors(2)->
+    end()
 ;
     

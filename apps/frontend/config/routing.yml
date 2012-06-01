@@ -19,6 +19,16 @@ company:
     with_wildcard_routes: true
     with_show:            true
 
+project:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                Project
+    module:               project
+    prefix_path:          /project
+    column:               id
+    with_wildcard_routes: true
+    with_show:            true
+
 # generic rules
 # please, remove them by adding more specific rules
 default_index:
