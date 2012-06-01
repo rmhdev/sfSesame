@@ -108,5 +108,35 @@ class CompanyTestFunctional extends sfTestFunctional {
         
         return $this;
     }
+    
+    public function callGetActionNew() {
+        return $this->get('company/new');
+    }
+    
+    public function callGetActionEdit($primaryKey) {
+        return $this->get(sprintf('company/%d/edit', $primaryKey));
+    }
+    
+    public function callGetActionShow($primaryKey) {
+        return $this->get(sprintf('company/%d', $primaryKey));
+    }
+    
+    public function callDeleteActionDelete($primaryKey) {
+        return $this->call(sprintf('company/%d' ,$primaryKey), 'delete');
+    }
+    
+    public function callGetActionIndex($parameters = array()) {
+        $urlParameters = array();
+        foreach ($parameters as $field=>$value) {
+            $urlParameters[] = "{$field}=$value";
+        }
+        $url = "company" . ($urlParameters ? "?".implode("&", $urlParameters) : "");
+        
+        return $this->get($url);
+    }
+    
+    public function callGetActionIndexDefault() {
+        return $this->callGetActionIndex(array('page' => 1, 'sort' => 'id', 'sort_type' => 'asc'));
+    }
 
 }

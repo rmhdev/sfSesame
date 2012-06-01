@@ -7,7 +7,7 @@ $browser->setTester('doctrine', 'sfTesterDoctrine');
 
 $browser->
   info('1. Display the create company form')->
-  get('/company/new')->
+  callGetActionNew()->
   with('request')->begin()->
     isParameter('module', 'company')->
     isParameter('action', 'new')->
@@ -20,7 +20,7 @@ $browser->
 
 $browser->
     info("2. The required fields can't be empty" )->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataForEmptyForm())->
     with('form')->begin()->
         hasErrors(1)->
@@ -32,7 +32,7 @@ $browser->
 
 $browser->
     info("3. A name with less than 3 can't be saved")->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataFormWithName('a'))->
     with('form')->begin()->
         hasErrors(1)->
@@ -43,7 +43,7 @@ $browser->
 $longName = str_repeat('abcde', 10) . "z";
 $browser->
     info("4. A name greater than 50 can't be saved")->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataFormWithName($longName))->
     with('form')->begin()->
         hasErrors(1)->
@@ -53,7 +53,7 @@ $browser->
 
 $browser->
     info("5. A name with length between 3 and 50 is correct")->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataFormWithName('Company Inc'))->
     with('form')->begin()->
         hasErrors(false)->
@@ -71,7 +71,7 @@ $browser->
 
 $browser->
     info("6. The created company must be in the BD")->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataFormWithName('My company'))->
     with('doctrine')->begin()->
         check('Company', array(
@@ -82,7 +82,7 @@ $browser->
 
 $browser->
     info("7. Names of companies can't be duplicated")->
-    get('/company/new')->
+    callGetActionNew()->
     click('button_create', $browser->getDataFormWithName('My company'))->
         with('form')->begin()->
             hasErrors(1)->
@@ -93,7 +93,7 @@ $browser->
 $company = $browser->findOneByName('My company');
 $browser->
     info('8. Display the edit form')->
-    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    callGetActionEdit($company->getPrimaryKey())->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'edit')->
@@ -105,20 +105,20 @@ $browser->
 
 $browser->
     info('9. Edit a company')->
-    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    callGetActionEdit($company->getPrimaryKey())->
     click('button_update', $browser->getDataFormWithName('My company edited'))->
     with('form')->begin()->
         hasErrors(false)->
     end()->
 
     info('9.1. Edit an unexisting company must redirect to 404')->
-    get(sprintf('/company/%d/edit', 0))->
+    callGetActionEdit(0)->
     with('response')->isStatusCode(404)
 ;
 
 $browser->
     info('10. Show a company')->
-    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    callGetActionShow($company->getPrimaryKey())->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'show')->
@@ -131,7 +131,7 @@ $browser->
 $browser->
     info('11. Add button for save and add')->
     info('11.a. Existing company')->
-    get(sprintf('/company/%d/edit', $company->getPrimaryKey()))->
+    callGetActionEdit($company->getPrimaryKey())->
     click('button_save_and_add', $browser->getDataFormWithName("My company"))->
     followRedirect()->
         with('request')->begin()->
@@ -139,7 +139,7 @@ $browser->
             isParameter('action', 'new')->
     end()->
     info('11.b. New company')->
-    get(sprintf('/company/new', $company->getPrimaryKey()))->
+    callGetActionNew()->
     click('button_save_and_add', $browser->getDataFormWithName("Testing my company"))->
     followRedirect()->
         with('request')->begin()->
@@ -151,7 +151,7 @@ $browser->
 $browser->
     info('12. Buttons in the show action')->
     info('12.1. Edit button in the show action')->
-    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    callGetActionShow($company->getPrimaryKey())->
     click('Edit')->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -160,7 +160,7 @@ $browser->
     end()->
         
     info('12.2. back to list button in the show action')->
-    get(sprintf('/company/%d', $company->getPrimaryKey()))->
+    callGetActionShow($company->getPrimaryKey())->
     click('Back to list')->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -170,7 +170,7 @@ $browser->
 
 $browser->
     info('13. Display the list')->
-    get('company')->
+    callGetActionIndex()->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'index')->
@@ -181,7 +181,7 @@ $browser->
     end()->
     
     info('13.1. Link to create new company')->
-    get('company')->
+    callGetActionIndex()->
     click('Create new company')->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -193,7 +193,7 @@ $browser->deleteAll();
 
 $browser->
     info('14. The empty list must display a message')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->begin()->
         isStatusCode(200)->
         checkElement('.content:contains("No items in the list")', true)->
@@ -205,7 +205,7 @@ $totalItems = 1;
 
 $browser->
     info('15. With companys to show, the table must be shown')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->begin()->
         info('15.1. Dont show the message for empty lists')->
         checkElement('.content:contains("No items in the list")', false)->
@@ -225,7 +225,7 @@ $browser->
 
 $browser->
     info('16. Paginate only when is necessary')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->begin()->
         checkElement('.content .pagination', false)->
     end()
@@ -237,13 +237,13 @@ $totalItems += 10;
 $browser->
     info('17. The list can be paginated')->
     info('17.1. The list shows a max number of companies per page')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->begin()->
         info('17.2. With 11 elements, show only 10')->
         checkElement('.content table tbody tr', true, array('count' => 10))->
     end()->
     info('17.3. In the second page there must be one company only')->
-    get('company?page=2')->
+    callGetActionIndex(array('page' => 2))->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'index')->
@@ -260,7 +260,7 @@ $browser->
 $browser->
     info('18. Links to pagination')->
     info('18.1. In first page')->
-    get('company?page=1')->
+    callGetActionIndex(array('page' => 1))->
     with('response')->begin()->
         info('18.1.1. Link to the previous page must be disabled')->
             checkElement('.content .pagination ul li:first("Previous")')->
@@ -281,12 +281,12 @@ $browser->
     end()->
     info('18.2 Go to next page')->
     info('18.2.1 Click on page 2')->
-        get('company')->
-        click('.pagination a[href*="page=2"]')->
-        with('request')->begin()->
-            isParameter('module', 'company')->
-            isParameter('action', 'index')->
-            isParameter('page', 2)->
+    callGetActionIndex()->
+    click('.pagination a[href*="page=2"]')->
+    with('request')->begin()->
+        isParameter('module', 'company')->
+        isParameter('action', 'index')->
+        isParameter('page', 2)->
     end()->
     with('response')->begin()->
         info('18.2.2. Link to the previous page must be enabled')->
@@ -308,7 +308,7 @@ $browser->
             checkElement('.content table tfoot tr td', "#11 results#")->
     end()->
     info('18.3 Page must be remembered')->
-        get('company')->
+        callGetActionIndex()->
         with('response')->begin()->
             info('18.3.1. Information about actual/total pages')->
             checkElement('.content table tfoot tr td', "#Page 2/2#")->
@@ -326,7 +326,7 @@ $sortTests['name'] = array(
 );
 
 $browser->info('19. Sort list');
-$browser->get('company?page=1');
+$browser->callGetActionIndex(array('page' => 1));
 $browser->info('19.1. Sort list by url');
 $i = $columnId = 0;
 $expectedResult = "";
@@ -335,7 +335,7 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
     foreach ($sortInfo as $sortType=>$expectedResult) {
         $i++;
         $browser->info("19.1.{$i}. Default sort is {$sortColumn}, {$sortType}")->
-            get("company?sort={$sortColumn}&sort_type={$sortType}")->
+            callGetActionIndex(array('sort' => $sortColumn, 'sort_type' => $sortType))->
             with('response')->begin()->
                 checkElement(".content table tbody tr:first td.col-{$sortColumn}", $expectedResult)->
             end()
@@ -344,14 +344,14 @@ foreach ($sortTests as $sortColumn=>$sortInfo){
 }
 
 $browser->info('19.2. After sorting, the sort column and type must be remembered')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->
         checkElement(".content table tbody tr:first td.col-{$sortColumn}", $expectedResult)
 ;
 
 $browser->info('19.3. Links for sorting by columns')->
     info('19.3.1. Default sorting')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=desc"))->
         checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', "/company?sort=name&sort_type=asc"))->
@@ -371,23 +371,23 @@ $browser->info('19.3. Links for sorting by columns')->
     end()->
         
     info('19.3.4. Links must indicate which column is beeing sorted')->
-    get('company?sort=id&sort_type=asc')->
+    callGetActionIndex(array('sort' => 'id', 'sort_type' => 'asc'))->
     with('response')->begin()->
         checkElement('.content table thead tr:first th.col-id a:contains("asc")')->
         checkElement('.content table thead tr:first a:contains("asc")', 1)->
     end()->
-    get('company?sort=id&sort_type=desc')->
+    callGetActionIndex(array('sort' => 'id', 'sort_type' => 'desc'))->
     with('response')->begin()->
         checkElement('.content table thead tr:first th.col-id a:contains("desc")')->
         checkElement('.content table thead tr:first a:contains("desc")', 1)->
     end()->
         
-    get('company?sort=name&sort_type=asc')->
+    callGetActionIndex(array('sort' => 'name', 'sort_type' => 'asc'))->
     with('response')->begin()->
         checkElement('.content table thead tr:first th.col-name a:contains("asc")')->
         checkElement('.content table thead tr:first a:contains("asc")', 1)->
     end()->
-    get('company?sort=name&sort_type=desc')->
+    callGetActionIndex(array('sort' => 'name', 'sort_type' => 'desc'))->
     with('response')->begin()->
         checkElement('.content table thead tr:first th.col-name a:contains("desc")')->
         checkElement('.content table thead tr:first a:contains("desc")', 1)->
@@ -395,7 +395,7 @@ $browser->info('19.3. Links for sorting by columns')->
 ;
 
 $browser->info("19.4. Can't sort using unknown columns")->
-    get('company?sort=unknown&sort_type=asc')->
+    callGetActionIndex(array('sort' => 'unknown', 'sort_type' => 'asc'))->
     followRedirect()->
     with('response')->begin()->
         isStatusCode(200)->
@@ -405,13 +405,13 @@ $browser->info("19.4. Can't sort using unknown columns")->
 
 $browser->info('20. Filtering list')->
     info('20.1. The filtering form must exist')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement('.content form.form-filter')->
     end()->
     
     info('20.2. After a correct search, redirect to index action')->
-    get('company')->
+    callGetActionIndex()->
     click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName('zzz'))->
     with('form')->begin()->
         hasErrors(0)->
@@ -424,7 +424,7 @@ $browser->info('20. Filtering list')->
 
 $filterNameUnknown = "zzz";
 $browser->info('20.3. After a correct search, filters must be remembered')->
-    get('company')->
+    callGetActionIndex()->
     click('.content form.form-filter button[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
@@ -432,14 +432,14 @@ $browser->info('20.3. After a correct search, filters must be remembered')->
     end()->
     
     info('20.4. Filters can be reseted (empty filters)')->
-    get('company')->
+    callGetActionIndex()->
     click('.content form.form-filter a.reset-filter')->
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 0)->
     end()->
     
     info('20.5. Searching by unknown name returns an empty list')->
-    get('company')->
+    callGetActionIndex()->
     click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
@@ -450,7 +450,7 @@ $browser->info('20.3. After a correct search, filters must be remembered')->
 $companyName = $browser->findFirstOrderedByName('asc')->getName();
 $browser->
     info("20.6. Searching an existing and unique name returns a single result: {$companyName}")->
-    get('company')->
+    callGetActionIndex()->
     click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($companyName))->
     followRedirect()->
     with('response')->begin()->
@@ -462,7 +462,7 @@ $companyToDelete = $browser->createAndSaveNewCompany("Company to delete");
 $idCompanyToDelete = $companyToDelete->getPrimaryKey();
 $browser->
     info('Delete an object')->
-    call(sprintf('company/%d' ,$idCompanyToDelete), 'delete')->
+    callDeleteActionDelete($idCompanyToDelete)->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'delete')->
@@ -484,13 +484,13 @@ $browser->
     click('.content form.form-filter a.reset-filter')->
     
     info('21.1. Batch form must exists')->
-    get('company')->
+    callGetActionIndex()->
     with('response')->begin()->
         checkElement('.content form.form-batch')->
     end()->
     
     info('21.2. Submit batch form: must execute batch action')->
-    get('company')->
+    callGetActionIndex()->
     clickFormBatchSubmit()->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -498,7 +498,7 @@ $browser->
     end()->
     
     info('21.3. After executing batch action, must redirect to index')->
-    get('company')->
+    callGetActionIndex()->
     clickFormBatchSubmit()->
     followRedirect()->
     with('request')->begin()->
@@ -511,7 +511,7 @@ $company = $browser->findFirstOrderedById('asc');
 
 $browser->
     info('21.4. For batching actions: user can select one or more items from list')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement('.content table tbody input[type="checkbox"]', 10)->
         checkElement('.content table tbody td.col-batch input[name="ids[]"]', 10)->
@@ -519,7 +519,7 @@ $browser->
     end()->
     
     info('21.5. For batching actions: user can select one action')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement('.content form.form-batch select[name="batch_action"]', 1)->
         checkElement('.content form.form-batch select option[value=""]', 1)->
@@ -529,20 +529,20 @@ $browser->
 
 $browser->info('21.5. Validate batch form')->
     info('21.5.1. User must select one or more checkboxes')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     clickFormBatchSubmit()->
     followRedirect()->
     withResponseCheckFlashMessageError("#items#")->
     
     info('21.5.2. User must select one action')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     select(sprintf('ids_%d', $company->getId()))->
     clickFormBatchSubmit()->
     followRedirect()->
     withResponseCheckFlashMessageError("#action#")->
     
     info('21.5.3. Check CSRF protection')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement('.content form.form-batch input[name="_csrf_token"][value]')->
     end()
@@ -552,7 +552,7 @@ $companyToDelete = $browser->createAndSaveNewCompany('Company to delete: unknown
 $idCompanyToDelete = $companyToDelete->getPrimaryKey();
 $batchData = array('batch_action' => 'batchUnknown', 'ids' => array($idCompanyToDelete));
 $browser->info('21.5.4. Check that received batch action exists')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     clickFormBatchSubmit($batchData)->
     followRedirect()->
     withResponseCheckFlashMessageError("#create#")
@@ -562,7 +562,7 @@ $company = $browser->findFirstOrderedById('desc');
 $idCompanyNonExisting = $company->getId() + 1;
 $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyNonExisting));
 $browser->info('21.5.5. Check that received ids are correct')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     clickFormBatchSubmit($batchData)->
     followRedirect()->
     withResponseCheckFlashMessageError("#exist#")
@@ -572,7 +572,7 @@ $companyToDelete = $browser->createAndSaveNewCompany("AAA Company to delete");
 $idCompanyToDelete = $companyToDelete->getPrimaryKey();
 $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyToDelete));
 $browser->info('21.6. Batch action: delete')->
-    get('company?page=1&sort=id&sort_type=asc')->
+    callGetActionIndexDefault()->
     with('response')->begin()->
         checkElement('.content form.form-batch select option[value="batchDelete"]')->
     end()->
