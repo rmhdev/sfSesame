@@ -66,7 +66,6 @@ $browser->
         isParameter('id', $browser->findOneByName('Company Inc')->getPrimaryKey())->
     end()->
     withResponseCheckFlashMessageSuccess("#successfully#")
-
 ;
 
 $browser->

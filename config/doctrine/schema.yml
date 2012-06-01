@@ -3,3 +3,12 @@ Company:
     Timestampable:  ~
   columns:
     name:     { type: string(150), notnull: true, unique: true }
+
+Project:
+  actAs:
+    Timestampable:  ~
+  columns:
+    name:         { type: string(150), notnull: true, unique: true }
+    company_id:   { type: integer, primary: false }
+  relations:
+    Company:      { onDelete: CASCADE, local: company_id, foreign: id, foreignAlias: Projects }
