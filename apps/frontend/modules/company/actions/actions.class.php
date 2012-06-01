@@ -13,7 +13,9 @@ class companyActions extends sfActions {
         if ($request->getParameter('sort')){
             $sort = $request->getParameter('sort');
             $this->checkSortColumnName($sort);
-            $this->setSort($sort, $request->getParameter('sort_type'));
+            $sortType = $request->getParameter('sort_type');
+            $this->checkSortType($sortType);
+            $this->setSort($sort, $sortType);
         }
         if ($request->getParameter('page')) {
             $this->setPage($request->getParameter('page'));
@@ -26,6 +28,13 @@ class companyActions extends sfActions {
     protected function checkSortColumnName($columnName){
         if (!$this->isValidSortColumn($columnName)) {
             $this->getUser()->setFlash('error', sprintf("Can't sort by unknown column '%s'", $columnName));
+            $this->redirectToIndex();
+        }
+    }
+    
+    protected function checkSortType($sortType) {
+        if (!in_array($sortType, array('asc', 'desc'))) {
+            $this->getUser()->setFlash('error', 'The sort type is unknown. Try asc or desc.');
             $this->redirectToIndex();
         }
     }

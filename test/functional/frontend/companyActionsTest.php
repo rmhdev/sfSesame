@@ -403,6 +403,15 @@ $browser->info("19.4. Can't sort using unknown columns")->
     withResponseCheckFlashMessageError("#unknown#")
 ;
 
+$browser->info("19.5. Sort types: only asc and desc")->
+    callGetActionIndex(array('sort' => 'id', 'sort_type' => 'foo'))->
+    followRedirect()->
+    with('response')->begin()->
+        isStatusCode(200)->
+    end()->
+    withResponseCheckFlashMessageError('#type#')
+;
+
 $browser->info('20. Filtering list')->
     info('20.1. The filtering form must exist')->
     callGetActionIndexDefault()->
