@@ -11,10 +11,8 @@ class companyActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         if ($request->getParameter('sort')){
-            $sort = $request->getParameter('sort');
-            $this->checkSortColumnName($sort);
-            $sortType = $request->getParameter('sort_type');
-            $this->checkSortType($sortType);
+            $sort       = $this->getCorrectSortColumnName($request);
+            $sortType   = $this->getCorrectSortType($request);
             $this->setSort($sort, $sortType);
         }
         if ($request->getParameter('page')) {
@@ -25,18 +23,24 @@ class companyActions extends sfActions {
         $this->formFilter   = $this->getFormFilter($this->getFilters());
     }
     
-    protected function checkSortColumnName($columnName){
+    protected function getCorrectSortColumnName(sfWebRequest $request){
+        $columnName = $request->getParameter('sort');
         if (!$this->isValidSortColumn($columnName)) {
             $this->getUser()->setFlash('error', sprintf("Can't sort by unknown column '%s'", $columnName));
             $this->redirectToIndex();
         }
+        
+        return $columnName;
     }
     
-    protected function checkSortType($sortType) {
+    protected function getCorrectSortType(sfWebRequest $request) {
+        $sortType = $request->getParameter('sort_type', 'asc');
         if (!in_array($sortType, array('asc', 'desc'))) {
-            $this->getUser()->setFlash('error', 'The sort type is unknown. Try asc or desc.');
+            $this->getUser()->setFlash('error', sprintf('The sort type "%s" is unknown. Try asc or desc.', $sortType));
             $this->redirectToIndex();
         }
+        
+        return $sortType;
     }
     
     public function executeFilter(sfWebRequest $request) {
