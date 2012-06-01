@@ -24,4 +24,11 @@ $browser->
     with('request')->begin()->
         isParameter('module', 'default')->
         isParameter('action', '404')->
-    end();
+    end()->
+    
+    with('response')->begin()->
+        isStatusCode(200)->
+        checkElement('.content', '#404#')->
+    end()
+;
+    
