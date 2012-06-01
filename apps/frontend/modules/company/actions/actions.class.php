@@ -131,7 +131,7 @@ class companyActions extends sfActions {
     }
     
     protected function getPager(){
-        $pager = new sfDoctrinePager($this->getModelName(), 10);
+        $pager = new sfDoctrinePager($this->getModelName(), $this->getMaxPerPage());
         $pager->setQuery($this->buildQuery());
         $pager->setPage($this->getPage());
         $pager->init();
@@ -295,6 +295,10 @@ class companyActions extends sfActions {
     
     protected function getNameSpace() {
         return 'admin_module';
+    }
+    
+    protected function getMaxPerPage() {
+        return sfConfig::get('app_pager_default');
     }
     
 }

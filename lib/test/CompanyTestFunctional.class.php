@@ -146,7 +146,7 @@ class CompanyTestFunctional extends sfTestFunctional {
     }
     
     public function getMaxPerPage() {
-        return 10;
+        return sfConfig::get('app_pager_default');
     }
 
 }
