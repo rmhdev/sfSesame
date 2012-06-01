@@ -231,16 +231,16 @@ $browser->
     end()
 ;
 
-$browser->createAndSaveMultipleCompanies(10);
-$totalItems += 10;
+$browser->createAndSaveMultipleCompanies($browser->getMaxPerPage());
+$totalItems += $browser->getMaxPerPage();
 
 $browser->
     info('17. The list can be paginated')->
     info('17.1. The list shows a max number of companies per page')->
     callGetActionIndex()->
     with('response')->begin()->
-        info('17.2. With 11 elements, show only 10')->
-        checkElement('.content table tbody tr', true, array('count' => 10))->
+        info(sprintf('17.2. With %d+1 elements, show only %d', $browser->getMaxPerPage(), $browser->getMaxPerPage()))->
+        checkElement('.content table tbody tr', true, array('count' => $browser->getMaxPerPage()))->
     end()->
     info('17.3. In the second page there must be one company only')->
     callGetActionIndex(array('page' => 2))->
@@ -305,7 +305,7 @@ $browser->
             checkElement('.content .pagination ul li:nth-child(4)[class="next disabled"]')->
         info('18.2.6. Information about actual/total pages')->
             checkElement('.content table tfoot tr td', "#Page 2/2#")->
-            checkElement('.content table tfoot tr td', "#11 results#")->
+            checkElement('.content table tfoot tr td', sprintf("#%d results#", $browser->getMaxPerPage() + 1))->
     end()->
     info('18.3 Page must be remembered')->
         callGetActionIndex()->
@@ -412,7 +412,7 @@ $browser->info('20. Filtering list')->
     
     info('20.2. After a correct search, redirect to index action')->
     callGetActionIndex()->
-    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName('zzz'))->
+    clickFormFilterSubmit($browser->getDataFilterWithName('zzz'))->
     with('form')->begin()->
         hasErrors(0)->
     end()->
@@ -425,7 +425,7 @@ $browser->info('20. Filtering list')->
 $filterNameUnknown = "zzz";
 $browser->info('20.3. After a correct search, filters must be remembered')->
     callGetActionIndex()->
-    click('.content form.form-filter button[type=submit]', $browser->getDataFilterWithName($filterNameUnknown))->
+    clickFormFilterSubmit($browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 1)->
@@ -433,14 +433,14 @@ $browser->info('20.3. After a correct search, filters must be remembered')->
     
     info('20.4. Filters can be reseted (empty filters)')->
     callGetActionIndex()->
-    click('.content form.form-filter a.reset-filter')->
+    clickFormFilterReset()->
     with('response')->begin()->
         checkElement(sprintf('.content form.form-filter input[value="%s"]', $filterNameUnknown), 0)->
     end()->
     
     info('20.5. Searching by unknown name returns an empty list')->
     callGetActionIndex()->
-    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($filterNameUnknown))->
+    clickFormFilterSubmit($browser->getDataFilterWithName($filterNameUnknown))->
     followRedirect()->
     with('response')->begin()->
         checkElement('.content:contains("No items in the list")')->
@@ -451,7 +451,7 @@ $companyName = $browser->findFirstOrderedByName('asc')->getName();
 $browser->
     info("20.6. Searching an existing and unique name returns a single result: {$companyName}")->
     callGetActionIndex()->
-    click('.content form.form-filter button[type="submit"]', $browser->getDataFilterWithName($companyName))->
+    clickFormFilterSubmit($browser->getDataFilterWithName($companyName))->
     followRedirect()->
     with('response')->begin()->
         checkElement('.content table tfoot tr td', "#1 results#")->
@@ -481,7 +481,7 @@ $browser->
 $browser->
     info('21. Batch actions')->
     info('21.0 reset filters')->
-    click('.content form.form-filter a.reset-filter')->
+    clickFormFilterReset()->
     
     info('21.1. Batch form must exists')->
     callGetActionIndex()->
@@ -513,8 +513,8 @@ $browser->
     info('21.4. For batching actions: user can select one or more items from list')->
     callGetActionIndexDefault()->
     with('response')->begin()->
-        checkElement('.content table tbody input[type="checkbox"]', 10)->
-        checkElement('.content table tbody td.col-batch input[name="ids[]"]', 10)->
+        checkElement('.content table tbody input[type="checkbox"]', $browser->getMaxPerPage())->
+        checkElement('.content table tbody td.col-batch input[name="ids[]"]', $browser->getMaxPerPage())->
         checkElement(sprintf('.content table tbody tr:first td.col-batch input[value="%d"]', $company->getId()), 1)->
     end()->
     

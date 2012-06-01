@@ -104,9 +104,15 @@ class CompanyTestFunctional extends sfTestFunctional {
     }
     
     public function clickFormBatchSubmit($arguments = array()) {
-        $this->click('.content form.form-batch button[type="submit"]', $arguments);
-        
-        return $this;
+        return $this->click('.content form.form-batch button[type="submit"]', $arguments);
+    }
+    
+    public function clickFormFilterSubmit($arguments = array()) {
+        return $this->click('.content form.form-filter button[type="submit"]', $arguments);
+    }
+    
+    public function clickFormFilterReset() {
+        return $this->click('.content form.form-filter a.reset-filter');
     }
     
     public function callGetActionNew() {
@@ -137,6 +143,10 @@ class CompanyTestFunctional extends sfTestFunctional {
     
     public function callGetActionIndexDefault() {
         return $this->callGetActionIndex(array('page' => 1, 'sort' => 'id', 'sort_type' => 'asc'));
+    }
+    
+    public function getMaxPerPage() {
+        return 10;
     }
 
 }
