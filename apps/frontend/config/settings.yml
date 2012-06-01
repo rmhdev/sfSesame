@@ -35,3 +35,7 @@ all:
     use_database:           true
     
     standard_helpers:       [Partial, Cache, Sesame]
+  
+  .actions:
+    error_404_module:       default
+    error_404_action:       404

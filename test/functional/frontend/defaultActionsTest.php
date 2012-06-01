@@ -27,8 +27,12 @@ $browser->
     end()->
     
     with('response')->begin()->
-        isStatusCode(200)->
+        isStatusCode(404)->
         checkElement('.content', '#404#')->
+    end()->
+    
+    get('/qwertyuiop')->
+    with('response')->begin()->
+        isStatusCode(404)->
     end()
 ;
-    
