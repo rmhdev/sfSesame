@@ -96,11 +96,9 @@ class CompanyTestFunctional extends sfTestFunctional {
     }
     
     protected function withResponseCheckFlashMessage($type = "", $value = null) {
-        $this->with('response')->begin()->
+        return $this->with('response')->begin()->
             checkElement(".content div.alert-message.{$type}", $value)->
         end();
-        
-        return $this;
     }
     
     public function clickFormBatchSubmit($arguments = array()) {
@@ -115,38 +113,62 @@ class CompanyTestFunctional extends sfTestFunctional {
         return $this->click('.content form.form-filter a.reset-filter');
     }
     
+    public function getMaxPerPage() {
+        return sfConfig::get('app_pager_default');
+    }
+    
+    // CALL
+    
     public function callGetActionNew() {
-        return $this->get('company/new');
+        return $this->get($this->urlActionNew());
     }
     
     public function callGetActionEdit($primaryKey) {
-        return $this->get(sprintf('company/%d/edit', $primaryKey));
+        return $this->get($this->urlActionEdit($primaryKey));
     }
     
     public function callGetActionShow($primaryKey) {
-        return $this->get(sprintf('company/%d', $primaryKey));
+        return $this->get($this->urlActionShow($primaryKey));
     }
     
     public function callDeleteActionDelete($primaryKey) {
-        return $this->call(sprintf('company/%d' ,$primaryKey), 'delete');
+        return $this->call($this->urlActionDelete($primaryKey), 'delete');
     }
     
     public function callGetActionIndex($parameters = array()) {
-        $urlParameters = array();
-        foreach ($parameters as $field=>$value) {
-            $urlParameters[] = "{$field}=$value";
-        }
-        $url = "company" . ($urlParameters ? "?".implode("&", $urlParameters) : "");
-        
-        return $this->get($url);
+        return $this->get($this->urlActionIndex($parameters));
     }
     
     public function callGetActionIndexDefault() {
         return $this->callGetActionIndex(array('page' => 1, 'sort' => 'id', 'sort_type' => 'asc'));
     }
     
-    public function getMaxPerPage() {
-        return sfConfig::get('app_pager_default');
+    
+    // URLS
+    
+    public function urlActionIndex($parameters = array()) {
+        $urlParameters = array();
+        foreach ($parameters as $field=>$value) {
+            $urlParameters[] = "{$field}=$value";
+        }
+        
+        return "/company" . ($urlParameters ? "?".implode("&", $urlParameters) : "");
+    }
+    
+    public function urlActionEdit($primaryKey) {
+        return sprintf('/company/%d/edit', $primaryKey);
+    }
+    
+    public function urlActionShow($primaryKey) {
+        return sprintf('/company/%d', $primaryKey);
+    }
+    
+    public function urlActionDelete($primaryKey) {
+        return sprintf('/company/%d', $primaryKey);
+    }
+    
+    public function urlActionNew() {
+        return '/company/new';
     }
 
 }

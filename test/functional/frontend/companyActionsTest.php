@@ -215,7 +215,7 @@ $browser->
         checkElement(sprintf('.content table tbody tr:first td.col-id:contains(%d)', $company->getPrimaryKey()))->
         info('15.4. A link with the name of the company to show the company')->
         checkElement(sprintf('.content table tbody tr:first a:contains("%s")]', $company->getName()))->
-        checkElement(sprintf('.content table tbody tr:first a[href]:contains("/company/%d")]', $company->getId()))->
+        checkElement(sprintf('.content table tbody tr:first a[href]:contains("%s")]', $browser->urlActionShow($company->getId())))->
         info('15.5. Every column has its name in the header of the table')->
         checkElement('.content table thead tr:first th', true, array('count' => 3))->
         checkElement('.content table thead tr:first th.col-id:contains("Id")')->
@@ -353,21 +353,21 @@ $browser->info('19.3. Links for sorting by columns')->
     info('19.3.1. Default sorting')->
     callGetActionIndexDefault()->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=desc"))->
-        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', "/company?sort=name&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', $browser->urlActionIndex(array('sort' => 'id', 'sort_type' => 'desc'))))->
+        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', $browser->urlActionIndex(array('sort' => 'name', 'sort_type' => 'asc'))))->
     end()->
     
     info('19.3.2. Clicking on actually sorting column link changes sort type')->
     click('.content table thead tr:first th.col-id a')->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', $browser->urlActionIndex(array('sort' => 'id', 'sort_type' => 'asc'))))->
     end()->
     
     info('19.3.3. Clicking on not actually sorting column link sets sort type to asc')->
     click('.content table thead tr:first th.col-name a')->
     with('response')->begin()->
-        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', "/company?sort=id&sort_type=asc"))->
-        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', "/company?sort=name&sort_type=desc"))->
+        checkElement(sprintf('.content table thead tr:first th.col-id a[href*="%s"]', $browser->urlActionIndex(array('sort' => 'id', 'sort_type' => 'asc'))))->
+        checkElement(sprintf('.content table thead tr:first th.col-name a[href*="%s"]', $browser->urlActionIndex(array('sort' => 'name', 'sort_type' => 'desc'))))->
     end()->
         
     info('19.3.4. Links must indicate which column is beeing sorted')->
