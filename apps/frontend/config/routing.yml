@@ -3,8 +3,11 @@
 
 # default rules
 homepage:
-  url:   /
-  param: { module: default, action: index }
+  url:    /
+  param:  { module: default, action: index }
+404:
+  url:    /404
+  param:  { module: default, action: 404 }
 
 company:
   class: sfDoctrineRouteCollection

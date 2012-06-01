@@ -25,6 +25,6 @@ sfContext::createInstance($configuration);
 // remove all cache
 sfToolkit::clearDirectory(sfConfig::get('sf_app_cache_dir'));
 
-Doctrine::createTablesFromModels(sfConfig::get('sf_lib_dir').'/model');
-Doctrine_Core::loadData(sfConfig::get('sf_data_dir').'/fixtures');
+//Doctrine::createTablesFromModels(sfConfig::get('sf_lib_dir').'/model');
+//Doctrine_Core::loadData(sfConfig::get('sf_data_dir').'/fixtures');
 

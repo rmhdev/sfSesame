@@ -17,3 +17,11 @@ $browser->
     checkElement('body', '!/This is a temporary page/')->
   end()
 ;
+
+$browser->
+    info('Personalized 404 page')->
+    get('/404')->
+    with('request')->begin()->
+        isParameter('module', 'default')->
+        isParameter('action', '404')->
+    end();
