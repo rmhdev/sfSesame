@@ -2,18 +2,17 @@
 
 include(dirname(__FILE__).'/../../bootstrap/functional.php');
 
-$browser = new sfTestFunctional(new sfBrowser());
+$browser = new ProjectTestFunctional(new sfBrowser());
+$browser->setTester('doctrine', 'sfTesterDoctrine');
 
-$browser->
-  get('/project/index')->
-
-  with('request')->begin()->
-    isParameter('module', 'project')->
-    isParameter('action', 'index')->
-  end()->
-
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '!/This is a temporary page/')->
-  end()
+$browser->info('1. Display the create project form')->
+    callGetActionNew()->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        isParameter('action', 'new')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
+    end()
+    
 ;
