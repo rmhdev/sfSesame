@@ -26,9 +26,7 @@ $browser->
         hasErrors(1)->
         isError('name', 'required')->
     end()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.error', "#check#")->
-    end()
+    withResponseCheckFlashMessageError("#check#")
 ;
 
 
@@ -67,9 +65,8 @@ $browser->
         isParameter('action', 'edit')->
         isParameter('id', $browser->findOneByName('Company Inc')->getPrimaryKey())->
     end()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.success', "#successfully#")->
-    end()
+    withResponseCheckFlashMessageSuccess("#successfully#")
+
 ;
 
 $browser->
@@ -100,8 +97,8 @@ $browser->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'edit')->
-      end()->
-      with('response')->begin()->
+    end()->
+    with('response')->begin()->
         isStatusCode(200)->
     end()
 ;
@@ -402,8 +399,8 @@ $browser->info("19.4. Can't sort using unknown columns")->
     followRedirect()->
     with('response')->begin()->
         isStatusCode(200)->
-        checkElement('.content div.alert-message.error', "#unknown#")->
-    end()
+    end()->
+    withResponseCheckFlashMessageError("#unknown#")
 ;
 
 $browser->info('20. Filtering list')->
@@ -478,9 +475,7 @@ $browser->
         isParameter('module', 'company')->
         isParameter('action', 'index')->
     end()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.success', 1)->
-    end()
+    withResponseCheckFlashMessageSuccess(1)
 ;
 
 $browser->
@@ -496,7 +491,7 @@ $browser->
     
     info('21.2. Submit batch form: must execute batch action')->
     get('company')->
-    click('.content form.form-batch button[type="submit"]')->
+    clickFormBatchSubmit()->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'batch')->
@@ -504,7 +499,7 @@ $browser->
     
     info('21.3. After executing batch action, must redirect to index')->
     get('company')->
-    click('.content form.form-batch button[type="submit"]')->
+    clickFormBatchSubmit()->
     followRedirect()->
     with('request')->begin()->
         isParameter('module', 'company')->
@@ -535,20 +530,16 @@ $browser->
 $browser->info('21.5. Validate batch form')->
     info('21.5.1. User must select one or more checkboxes')->
     get('company?page=1&sort=id&sort_type=asc')->
-    click('.content form.form-batch button[type="submit"]')->
+    clickFormBatchSubmit()->
     followRedirect()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.error', "#items#")->
-    end()->
+    withResponseCheckFlashMessageError("#items#")->
     
     info('21.5.2. User must select one action')->
     get('company?page=1&sort=id&sort_type=asc')->
     select(sprintf('ids_%d', $company->getId()))->
-    click('.content form.form-batch button[type="submit"]')->
+    clickFormBatchSubmit()->
     followRedirect()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.error', "#action#")->
-    end()->
+    withResponseCheckFlashMessageError("#action#")->
     
     info('21.5.3. Check CSRF protection')->
     get('company?page=1&sort=id&sort_type=asc')->
@@ -562,12 +553,9 @@ $idCompanyToDelete = $companyToDelete->getPrimaryKey();
 $batchData = array('batch_action' => 'batchUnknown', 'ids' => array($idCompanyToDelete));
 $browser->info('21.5.4. Check that received batch action exists')->
     get('company?page=1&sort=id&sort_type=asc')->
-    click('.content form.form-batch button[type="submit"]', $batchData)->
-    //throwsException()
+    clickFormBatchSubmit($batchData)->
     followRedirect()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.error', "#create#")->
-    end()
+    withResponseCheckFlashMessageError("#create#")
 ;
 
 $company = $browser->findFirstOrderedById('desc');
@@ -575,11 +563,9 @@ $idCompanyNonExisting = $company->getId() + 1;
 $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyNonExisting));
 $browser->info('21.5.5. Check that received ids are correct')->
     get('company?page=1&sort=id&sort_type=asc')->
-    click('.content form.form-batch button[type="submit"]', $batchData)->
+    clickFormBatchSubmit($batchData)->
     followRedirect()->
-    with('response')->begin()->
-        checkElement('.content div.alert-message.error', "#exist#")->
-    end()
+    withResponseCheckFlashMessageError("#exist#")
 ;
 
 $companyToDelete = $browser->createAndSaveNewCompany("AAA Company to delete");
@@ -588,14 +574,14 @@ $batchData = array('batch_action' => 'batchDelete', 'ids' => array($idCompanyToD
 $browser->info('21.6. Batch action: delete')->
     get('company?page=1&sort=id&sort_type=asc')->
     with('response')->begin()->
-        checkElement('.content form.form.batch select option[value="batchDelete"]')->
+        checkElement('.content form.form-batch select option[value="batchDelete"]')->
     end()->
-    click('.content form.form-batch button[type="submit"]', $batchData)->
+    clickFormBatchSubmit($batchData)->
     followRedirect()->
     with('response')->begin()->
         isStatusCode(200)->
-        checkElement('.content div.alert-message.success', "#deleted#")->
     end()->
+    withResponseCheckFlashMessageSuccess("#deleted#")->
     
     with('doctrine')->begin()->
         check('Company', array('id' => $idCompanyToDelete), false)->

@@ -86,5 +86,27 @@ class CompanyTestFunctional extends sfTestFunctional {
         
         return $data;
     }
+    
+    public function withResponseCheckFlashMessageError($value = null) {
+        return $this->withResponseCheckFlashMessage('error', $value);
+    }
+    
+    public function withResponseCheckFlashMessageSuccess($value = null) {
+        return $this->withResponseCheckFlashMessage('success', $value);
+    }
+    
+    protected function withResponseCheckFlashMessage($type = "", $value = null) {
+        $this->with('response')->begin()->
+            checkElement(".content div.alert-message.{$type}", $value)->
+        end();
+        
+        return $this;
+    }
+    
+    public function clickFormBatchSubmit($arguments = array()) {
+        $this->click('.content form.form-batch button[type="submit"]', $arguments);
+        
+        return $this;
+    }
 
 }
