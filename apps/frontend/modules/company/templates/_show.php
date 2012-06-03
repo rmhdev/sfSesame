@@ -1,5 +1,5 @@
 <?php /* @var $company Company */ ?>
-<table class="condensed-table">
+<table class="table table-bordered">
     <tbody>
         <tr>
             <th>Name:</th>

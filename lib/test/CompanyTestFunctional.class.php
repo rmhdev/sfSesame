@@ -97,7 +97,7 @@ class CompanyTestFunctional extends sfTestFunctional {
     
     protected function withResponseCheckFlashMessage($type = "", $value = null) {
         return $this->with('response')->begin()->
-            checkElement(".content div.alert-message.{$type}", $value)->
+            checkElement(".content div.alert.alert-{$type}", $value)->
         end();
     }
     

@@ -21,7 +21,7 @@ $browser->
 $browser->
     info("2. The required fields can't be empty" )->
     callGetActionNew()->
-    click('button_create', $browser->getDataForEmptyForm())->
+    click('button-create', $browser->getDataForEmptyForm())->
     with('form')->begin()->
         hasErrors(1)->
         isError('name', 'required')->
@@ -33,7 +33,7 @@ $browser->
 $browser->
     info("3. A name with less than 3 can't be saved")->
     callGetActionNew()->
-    click('button_create', $browser->getDataFormWithName('a'))->
+    click('button-create', $browser->getDataFormWithName('a'))->
     with('form')->begin()->
         hasErrors(1)->
         isError('name', 'min_length')->
@@ -44,7 +44,7 @@ $longName = str_repeat('abcde', 10) . "z";
 $browser->
     info("4. A name greater than 50 can't be saved")->
     callGetActionNew()->
-    click('button_create', $browser->getDataFormWithName($longName))->
+    click('button-create', $browser->getDataFormWithName($longName))->
     with('form')->begin()->
         hasErrors(1)->
         isError('name', 'max_length')->
@@ -54,7 +54,7 @@ $browser->
 $browser->
     info("5. A name with length between 3 and 50 is correct")->
     callGetActionNew()->
-    click('button_create', $browser->getDataFormWithName('Company Inc'))->
+    click('button-create', $browser->getDataFormWithName('Company Inc'))->
     with('form')->begin()->
         hasErrors(false)->
     end()->
@@ -71,7 +71,7 @@ $browser->
 $browser->
     info("6. The created company must be in the BD")->
     callGetActionNew()->
-    click('button_create', $browser->getDataFormWithName('My company'))->
+    click('button-create', $browser->getDataFormWithName('My company'))->
     with('doctrine')->begin()->
         check('Company', array(
             'name' => 'My company'
@@ -82,7 +82,7 @@ $browser->
 $browser->
     info("7. Names of companies can't be duplicated")->
     callGetActionNew()->
-    click('button_create', $browser->getDataFormWithName('My company'))->
+    click('button-create', $browser->getDataFormWithName('My company'))->
         with('form')->begin()->
             hasErrors(1)->
             isError('name', 'invalid')->
@@ -105,7 +105,7 @@ $browser->
 $browser->
     info('9. Edit a company')->
     callGetActionEdit($company->getPrimaryKey())->
-    click('button_update', $browser->getDataFormWithName('My company edited'))->
+    click('button-update', $browser->getDataFormWithName('My company edited'))->
     with('form')->begin()->
         hasErrors(false)->
     end()->
@@ -131,7 +131,7 @@ $browser->
     info('11. Add button for save and add')->
     info('11.a. Existing company')->
     callGetActionEdit($company->getPrimaryKey())->
-    click('button_save_and_add', $browser->getDataFormWithName("My company"))->
+    click('button-save_and_add', $browser->getDataFormWithName("My company"))->
     followRedirect()->
         with('request')->begin()->
             isParameter('module', 'company')->
@@ -139,7 +139,7 @@ $browser->
     end()->
     info('11.b. New company')->
     callGetActionNew()->
-    click('button_save_and_add', $browser->getDataFormWithName("Testing my company"))->
+    click('button-save_and_add', $browser->getDataFormWithName("Testing my company"))->
     followRedirect()->
         with('request')->begin()->
             isParameter('module', 'company')->

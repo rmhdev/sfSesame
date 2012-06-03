@@ -11,7 +11,7 @@
     <div class="row">
         <div class="span4">
             <div class="clearfix">
-            <?php echo link_to('Create new company', '@company_new', array('class' => 'btn success')); ?>
+            <?php echo link_to('Create new company', '@company_new', array('class' => 'btn btn-success')); ?>
                 
             </div>
             <br />
@@ -21,7 +21,7 @@
                     <legend>Search</legend>
                     <?php echo $formFilter->render(); ?>
                     <div class="actions">
-                        <button type="submit" class="btn info">Search</button>
+                        <button type="submit" class="btn btn-info">Search</button>
                         <?php echo link_to('Reset', url_for('company_collection', array('action' => 'filter')), array('class' => 'reset-filter btn', 'method' => 'post', 'query_string' => '_reset')); ?>
                     </div>
                 </fieldset>
@@ -31,8 +31,9 @@
             <?php include_partial('global/flashes'); ?>
             
             <?php if (!$pager->getNbResults()) : ?>
-                <div class="alert-message block-message warning">
-                    <p><strong>No items in the list</strong> </p>
+                <div class="hero-unit alert alert-block">
+                    <h2 class="alert-heading">No results</h2>
+                    <p>No items in the list.</p>
                 </div>
             <?php else : ?>
                 <?php if ($pager->haveToPaginate()) : ?>
@@ -40,7 +41,7 @@
                 <?php endif; ?>
 
                 <form action="<?php echo url_for('company_collection', array('action' => 'batch')); ?>" method="post" class="form-batch">
-                <table cellspacing="0" class="zebra-striped">
+                <table cellspacing="0" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th class="col-batch">&nbsp;</th>
@@ -73,7 +74,7 @@
                         <option value="">- Select an action -</option>
                         <option value="batchDelete">Delete selected items</option>
                     </select>
-                    <button type="submit" class="btn danger">Execute</button>
+                    <button type="submit" class="btn btn-warning">Execute</button>
                     
                     <?php $form = new BaseForm();?>
                     <?php if ($form->isCSRFProtected()) : ?>

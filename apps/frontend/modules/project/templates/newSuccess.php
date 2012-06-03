@@ -2,6 +2,6 @@
     
     <?php echo $form->render(); ?>
     
-    <button type="submit" id="button_create">Create</button>
+    <button type="submit" id="button-create">Create</button>
 
 </form>

@@ -6,7 +6,7 @@
  * @return string 
  */
 function sesame_render_pager($pager, $route){
-    $html = "<div class=\"pagination\">\n";
+    $html = "<div class=\"pagination pagination-right\">\n";
     $html .= "<ul>\n";
     
     $urlPattern = "{$route}?page=%d";

@@ -12,13 +12,13 @@
 
         <?php include_title() ?>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <?php echo stylesheet_tag('bootstrap.min.css'); ?>
+        <?php echo stylesheet_tag('bootstrap/css/bootstrap.min.css'); ?>
         <?php echo stylesheet_tag('main.css'); ?>
     </head>
 
     <body>
-        <div class="topbar">
-            <div class="fill">
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="#">sfSesame</a>
                 </div>
