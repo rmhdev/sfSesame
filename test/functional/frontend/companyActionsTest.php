@@ -181,7 +181,7 @@ $browser->
     
     info('13.1. Link to create new company')->
     callGetActionIndex()->
-    click('Create new company')->
+    click('#button-new')->
     with('request')->begin()->
         isParameter('module', 'company')->
         isParameter('action', 'new')->

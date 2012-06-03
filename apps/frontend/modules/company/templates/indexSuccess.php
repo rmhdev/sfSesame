@@ -9,9 +9,9 @@
     </div>
     
     <div class="row">
-        <div class="span4">
+        <div class="span3">
             <div class="clearfix">
-            <?php echo link_to('Create new company', '@company_new', array('class' => 'btn btn-success')); ?>
+            <?php echo link_to('Create new company', '@company_new', array('class' => 'btn btn-success', 'id' => 'button-new')); ?>
                 
             </div>
             <br />
@@ -27,7 +27,7 @@
                 </fieldset>
             </form>
         </div>
-        <div class="span8">
+        <div class="span9">
             <?php include_partial('global/flashes'); ?>
             
             <?php if (!$pager->getNbResults()) : ?>
