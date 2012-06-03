@@ -1,4 +1,4 @@
-<form action="<?php echo url_for('@project_new'); ?>" method="post">
+<?php echo form_tag_for($form, '@company'); ?>
     
     <?php echo $form->render(); ?>
     

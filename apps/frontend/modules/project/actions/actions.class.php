@@ -15,7 +15,17 @@ class projectActions extends sfActions {
     
     public function executeCreate(sfWebRequst $request) {
         $this->form = new ProjectForm();
-        //aquí
+        $this->processForm($request, $this->form);
+        $this->setTemplate('new');
+    }
+    
+    protected function processForm(sfWebRequest $request, ProjectForm $form) {
+        $form->bind($request->getParameter($form->getName()));
+        if ($form->isValid()) {
+            
+        } else {
+            
+        }
     }
 
 }
