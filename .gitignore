@@ -4,7 +4,7 @@ cache/*
 log/*
 web/uploads/*
 config/databases.yml
-*.idea
+.idea/*
 
 # Logs and databases #
 ######################
