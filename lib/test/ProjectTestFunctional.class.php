@@ -12,6 +12,13 @@ class ProjectTestFunctional extends sfTestFunctional {
             )
         );
     }
+
+    public function getDataFormWithName($name) {
+        $data = $this->getDataForEmptyForm();
+        $data['project']['name'] = $name;
+
+        return $data;
+    }
     
     public function callGetActionNew() {
         return $this->get($this->urlActionNew());

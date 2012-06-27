@@ -23,4 +23,20 @@ $browser->info("2. The required fields can't be empty")->
         hasErrors(2)->
     end()
 ;
-    
+
+$browser->info("3. A name with less than 3 can't be saved")->
+    callGetActionNew()->
+    click('button-create', $browser->getDataFormWithName("a"))->
+    with('form')->begin()->
+        isError('name', 'min_length')->
+    end()
+;
+
+$longName = str_repeat('abcde', 10) . "z";
+$browser->info("4. A name longer than 50 chars can't be saved")->
+    callGetActionNew()->
+    click('button-create', $browser->getDataFormWithName($longName))->
+    with('form')->begin()->
+        isError('name', 'max_length')->
+    end()
+;

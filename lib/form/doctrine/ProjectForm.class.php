@@ -6,11 +6,16 @@
  * @package    sfSesame
  * @subpackage form
  * @author     Rober Martín H
- * @version    SVN: $Id: sfDoctrineFormTemplate.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
+
  */
 class ProjectForm extends BaseProjectForm
 {
   public function configure()
   {
+      $this->useFields(array('name', 'company_id'));
+
+      $this->getValidator('company_id')->setOption('required', true);
+      $this->getValidator('name')->setOption('min_length', 3);
+      $this->getValidator('name')->setOption('max_length', 50);
   }
 }

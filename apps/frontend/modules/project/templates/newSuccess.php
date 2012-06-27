@@ -1,4 +1,4 @@
-<?php echo form_tag_for($form, '@company'); ?>
+<?php echo form_tag_for($form, '@project'); ?>
     
     <?php echo $form->render(); ?>
     
