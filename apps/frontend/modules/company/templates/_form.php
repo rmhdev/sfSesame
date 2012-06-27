@@ -3,7 +3,7 @@
 ?>
         <?php include_partial('global/flashes'); ?>
         
-        <?php echo form_tag_for($form, '@company'); ?>
+        <?php echo form_tag_for($form, '@company', array('class' => 'form-horizontal')); ?>
             <fieldset>
                 <legend><?php echo $form->isNew() ? 'Create a new company' : 'Edit company'?></legend>
 

@@ -1,5 +1,5 @@
 <?php /* @var $form CompanyForm */ ?>
-<div class="actions">
+<div class="form-actions">
     <button type="submit" id="button-<?php echo $form->isNew() ? 'create' : 'update'; ?>" name="save" class="btn btn-success">
         <?php echo $form->isNew() ? 'Create' : 'Update'; ?>
     </button>

@@ -1,7 +1,9 @@
-<?php echo form_tag_for($form, '@project'); ?>
+<?php echo form_tag_for($form, '@project', array('class' => 'form-horizontal')); ?>
     
     <?php echo $form->render(); ?>
-    
-    <button type="submit" id="button-create">Create</button>
+
+    <div class="form-actions">
+        <button type="submit" id="button-create" class="btn btn-success">Create</button>
+    </div>
 
 </form>
