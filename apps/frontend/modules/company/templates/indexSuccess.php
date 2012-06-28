@@ -69,12 +69,19 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-                    
-                    <select name="batch_action">
-                        <option value="">- Select an action -</option>
-                        <option value="batchDelete">Delete selected items</option>
-                    </select>
-                    <button type="submit" class="btn btn-warning">Execute</button>
+
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="input-append">
+                                <select name="batch_action">
+                                    <option value="">- Select an action -</option>
+                                    <option value="batchDelete">Delete selected items</option>
+                                </select>
+                                <button type="submit" class="btn btn-warning">Execute</button>
+                            </div>
+                        </div>
+                    </div>
                     
                     <?php $form = new BaseForm();?>
                     <?php if ($form->isCSRFProtected()) : ?>
