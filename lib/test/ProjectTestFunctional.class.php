@@ -19,6 +19,29 @@ class ProjectTestFunctional extends sfTestFunctional {
 
         return $data;
     }
+
+    public function getDataFormWithNameAndCompanyId($name, $companyId) {
+        $data = $this->getDataFormWithName($name);
+        $data['project']['company_id'] = $companyId;
+
+        return $data;
+    }
+
+
+    // Querys
+
+    /**
+     * @param string $sortType
+     * @return mixed
+     */
+    public function findFirstCompanyOrderedByName($sortType = "asc"){
+        $query = Doctrine::getTable('Company')->
+            createQuery('u')->
+            orderBy("u.name {$sortType}");
+
+        return $query->fetchOne();
+    }
+
     
     public function callGetActionNew() {
         return $this->get($this->urlActionNew());
