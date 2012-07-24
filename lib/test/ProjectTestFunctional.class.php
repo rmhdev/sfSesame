@@ -50,5 +50,15 @@ class ProjectTestFunctional extends sfTestFunctional {
     public function urlActionNew() {
         return 'project/new';
     }
-    
+
+    public function findOneByName($name)
+    {
+        $query = Doctrine::getTable('Project')->
+            createQuery('u')->
+            where('u.name = ?', $name);
+
+        return $query->fetchOne();
+    }
+
+
 }

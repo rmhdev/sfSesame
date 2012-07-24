@@ -52,7 +52,8 @@ $browser->info("5. A name with length between 3 and 50 is correct")->
 ;
 
 $company = $browser->findFirstCompanyOrderedByName('desc');
-$data = $browser->getDataFormWithNameAndCompanyId('Project B ' . time(), $company->getPrimaryKey());
+$newProjectName = 'Project B ' . time();
+$data = $browser->getDataFormWithNameAndCompanyId($newProjectName, $company->getPrimaryKey());
 
 $browser->info('6.1. Project is saved when all required fields are filled')->
     callGetActionNew()->
@@ -66,5 +67,18 @@ $browser->info('6.2. After created, redirect to edit ')->
     with('request')->begin()->
         isParameter('module', 'project')->
         isParameter('action', 'edit')->
+        isParameter('id', $browser->findOneByName($newProjectName)->getPrimaryKey())->
     end()
 ;
+
+$browser->
+    info("6.3. Names of projects can't be duplicated")->
+    callGetActionNew()->
+    click('button-create', $data)->
+    with('form')->begin()->
+        hasErrors(1)->
+        isError('name', 'invalid')->
+    end()
+
+;
+//edit a project
