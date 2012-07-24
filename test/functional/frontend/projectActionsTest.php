@@ -62,12 +62,13 @@ $browser->info('6.1. Project is saved when all required fields are filled')->
         hasErrors(0)->
     end();
 
+$newProject = $browser->findOneByName($newProjectName);
 $browser->info('6.2. After created, redirect to edit ')->
     followRedirect()->
     with('request')->begin()->
         isParameter('module', 'project')->
         isParameter('action', 'edit')->
-        isParameter('id', $browser->findOneByName($newProjectName)->getPrimaryKey())->
+        isParameter('id', $newProject->getPrimaryKey())->
     end()
 ;
 
@@ -81,4 +82,12 @@ $browser->
     end()
 
 ;
-//edit a project
+
+$browser->
+    info('7. Display the edit form')->
+    callGetActionEdit($newProject->getPrimaryKey())->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        //isParameter('action', 'edit')->
+    end()
+;

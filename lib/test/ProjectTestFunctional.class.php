@@ -60,5 +60,15 @@ class ProjectTestFunctional extends sfTestFunctional {
         return $query->fetchOne();
     }
 
+    public function callGetActionEdit($projectId)
+    {
+        return $this->get($this->urlActionEdit($projectId));
+    }
+
+    protected function urlActionEdit($projectId)
+    {
+        return sprintf("project/%d&edit", $projectId);
+    }
+
 
 }
