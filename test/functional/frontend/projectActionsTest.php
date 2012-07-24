@@ -52,21 +52,19 @@ $browser->info("5. A name with length between 3 and 50 is correct")->
 ;
 
 $company = $browser->findFirstCompanyOrderedByName('desc');
-$data = $browser->getDataFormWithNameAndCompanyId('Project B', $company->getPrimaryKey());
+$data = $browser->getDataFormWithNameAndCompanyId('Project B ' . time(), $company->getPrimaryKey());
 
 $browser->info('6.1. Project is saved when all required fields are filled')->
     callGetActionNew()->
     click('button-create', $data)->
     with('form')->begin()->
-        //hasErrors(1)->
-        //isError('company_id', 'invalid')->
-    end()
+        hasErrors(0)->
+    end();
 
-    /*info('6.2. After created, redirect to edit ')->
+$browser->info('6.2. After created, redirect to edit ')->
     followRedirect()->
     with('request')->begin()->
-    isError('company_id', 'required')->
-        //isParameter('module', 'project')->
-    end()*/
-
+        isParameter('module', 'project')->
+        isParameter('action', 'edit')->
+    end()
 ;
