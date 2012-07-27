@@ -80,7 +80,6 @@ $browser->
         hasErrors(1)->
         isError('name', 'invalid')->
     end()
-
 ;
 
 $browser->
@@ -88,6 +87,18 @@ $browser->
     callGetActionEdit($newProject->getPrimaryKey())->
     with('request')->begin()->
         isParameter('module', 'project')->
-        //isParameter('action', 'edit')->
+        isParameter('action', 'edit')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
+    end()
+;
+
+$browser->
+    info('8. Edit a project')->
+    callGetActionEdit($newProject->getPrimaryKey())->
+    click('button-update', $browser->getDataFormWithNameAndCompanyId("New edited name", $newProject->getCompanyId()))->
+    with('form')->begin()->
+    //    hasErrors(false)->
     end()
 ;

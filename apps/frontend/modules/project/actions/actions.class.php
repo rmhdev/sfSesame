@@ -32,6 +32,14 @@ class projectActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $this->project = $this->getRoute()->getObject();
+        $this->form = new ProjectForm($this->project);
+    }
+
+    public function executeUpdate(sfWebRequest $request) {
+        $this->project = $this->getRoute()->getObject();
+        $this->form = new ProjectForm($this->project);
+        $this->processForm($request, $this->form);
+        $this->setTemplate('edit');
     }
 
 }

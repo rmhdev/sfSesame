@@ -67,7 +67,7 @@ class ProjectTestFunctional extends sfTestFunctional {
 
     protected function urlActionEdit($projectId)
     {
-        return sprintf("project/%d&edit", $projectId);
+        return sprintf("project/%d/edit", $projectId);
     }
 
 

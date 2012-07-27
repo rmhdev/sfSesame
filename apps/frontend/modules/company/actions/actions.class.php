@@ -240,7 +240,7 @@ class companyActions extends sfActions {
     protected function getExistingMethodForBatchAction($batchAction) {
         $method = sprintf("execute%s", ucfirst($batchAction));
         if (!method_exists($this, $method)) {
-            $this->getUser()->setFlash('error', sprintf('You must create a "%s" method fot the action "%s"', $method, $action));
+            $this->getUser()->setFlash('error', sprintf('You must create a "%s" method fot the action "%s"', $method, $batchAction));
             $this->redirectToIndex();
         }
         
