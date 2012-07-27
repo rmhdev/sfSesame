@@ -97,8 +97,8 @@ $browser->
 $browser->
     info('8. Edit a project')->
     callGetActionEdit($newProject->getPrimaryKey())->
-    click('button-update', $browser->getDataFormWithNameAndCompanyId("New edited name", $newProject->getCompanyId()))->
+    click('button-update', $browser->getDataFormWithNameAndCompanyId("New edited name " . time(), $newProject->getCompanyId()))->
     with('form')->begin()->
-    //    hasErrors(false)->
+        hasErrors(false)->
     end()
 ;

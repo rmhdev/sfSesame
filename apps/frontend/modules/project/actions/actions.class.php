@@ -10,11 +10,12 @@
 class projectActions extends sfActions {
 
     public function executeNew(sfWebRequest $request) {
-        $this->form = new ProjectForm();
+        $this->form = $this->getForm();
     }
     
     public function executeCreate(sfWebRequest $request) {
-        $this->form = new ProjectForm();
+        $this->project = new Project();
+        $this->form = $this->getForm($this->project);
         $this->processForm($request, $this->form);
         $this->setTemplate('new');
     }
@@ -25,21 +26,23 @@ class projectActions extends sfActions {
             $object = $form->save();
 
             $this->redirect(array('sf_route' => 'project_edit', 'sf_subject' => $object));
-        } else {
-            
         }
     }
 
     public function executeEdit(sfWebRequest $request) {
         $this->project = $this->getRoute()->getObject();
-        $this->form = new ProjectForm($this->project);
+        $this->form = $this->getForm($this->project);
     }
 
     public function executeUpdate(sfWebRequest $request) {
-        $this->project = $this->getRoute()->getObject();
-        $this->form = new ProjectForm($this->project);
+        $project = $this->getRoute()->getObject();
+        $this->form = $this->getForm($project);
         $this->processForm($request, $this->form);
         $this->setTemplate('edit');
+    }
+
+    protected function getForm($project = null){
+        return new ProjectForm($project);
     }
 
 }

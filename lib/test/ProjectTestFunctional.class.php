@@ -5,6 +5,7 @@ class ProjectTestFunctional extends sfTestFunctional {
     public function getDataForEmptyForm() {
         return array(
             'project'   => array(
+                //'id'            => '',
                 'name'          => '',
                 'company_id'    => ''
             ), array(
