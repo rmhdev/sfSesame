@@ -100,5 +100,23 @@ $browser->
     click('button-update', $browser->getDataFormWithNameAndCompanyId("New edited name " . time(), $newProject->getCompanyId()))->
     with('form')->begin()->
         hasErrors(false)->
+    end()->
+
+    info('8.1. Editing an non-existing project must redirect to 404')->
+    callGetActionEdit(0)->
+    with('response')->begin()->
+        isStatusCode(404)->
+    end()
+;
+
+$browser->
+    info('9. Show a project')->
+    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        isParameter('action', 'show')->
+    end()->
+    with('response')->begin()->
+        isStatusCode(200)->
     end()
 ;

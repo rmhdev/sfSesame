@@ -45,4 +45,8 @@ class projectActions extends sfActions {
         return new ProjectForm($project);
     }
 
+    public function executeShow(sfWebRequest $request){
+
+    }
+
 }
