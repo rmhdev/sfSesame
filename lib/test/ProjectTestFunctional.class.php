@@ -71,5 +71,15 @@ class ProjectTestFunctional extends sfTestFunctional {
         return sprintf("project/%d/edit", $projectId);
     }
 
+    public function callGetActionShow($projectId)
+    {
+        return $this->get($this->urlActionShow($projectId));
+    }
+
+    protected function urlActionShow($projectId)
+    {
+        return sprintf("project/%s", $projectId);
+    }
+
 
 }

@@ -111,7 +111,7 @@ $browser->
 
 $browser->
     info('9. Show a project')->
-    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    callGetActionShow($newProject->getPrimaryKey())->
     with('request')->begin()->
         isParameter('module', 'project')->
         isParameter('action', 'show')->
@@ -121,7 +121,7 @@ $browser->
     end()->
 
     info('9.1. Buttons in the show action')->
-    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    callGetActionShow($newProject->getPrimaryKey())->
     info('9.1.1. Edit Button')->
     click('Edit')->
     with('request')->begin()->
@@ -130,7 +130,7 @@ $browser->
         isParameter('id', $newProject->getPrimaryKey())->
     end()->
 
-    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    callGetActionShow($newProject->getPrimaryKey())->
     info('9.1.2. Back to list Button')->
     click('Back to list')->
     with('request')->begin()->
