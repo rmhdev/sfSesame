@@ -106,6 +106,30 @@ $browser->
     callGetActionEdit(0)->
     with('response')->begin()->
         isStatusCode(404)->
+    end()->
+
+    info('8.2. Buttons for save and add')->
+    info('8.2.1. Existing project')->
+    callGetActionEdit($newProject->getPrimaryKey())->
+    click('button-save-and-add', $browser->getDataFormWithNameAndCompanyId("Save and add " . time(), $newProject->getCompanyId()))->
+    followRedirect()->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        isParameter('action', 'new')->
+    end()
+;
+
+$nameNewSaveAndAdd = "New save and add " . time();
+$browser->info('8.2.2. New Project')->
+    callGetActionNew()->
+    click('button-save-and-add', $browser->getDataFormWithNameAndCompanyId($nameNewSaveAndAdd, $newProject->getCompanyId()))->
+    with('doctrine')->begin()->
+        check('Project', array('name' => $nameNewSaveAndAdd), true)->
+    end()->
+    followRedirect()->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+
     end()
 ;
 

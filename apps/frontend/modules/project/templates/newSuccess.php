@@ -6,7 +6,8 @@
     <?php echo $form->render(); ?>
 
     <div class="form-actions">
-        <button type="submit" id="button-<?php echo $form->isNew() ? 'create' : 'update'; ?>" class="btn btn-success">Create</button>
+        <button type="submit" id="button-create" class="btn btn-success">Create</button>
+        <button type="submit" id="button-save-and-add" name="save_and_add" class="btn btn-success">Create and add new</button>
     </div>
 
 </form>

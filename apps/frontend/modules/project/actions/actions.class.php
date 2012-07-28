@@ -25,8 +25,11 @@ class projectActions extends sfActions {
         $form->bind($request->getParameter($form->getName()));
         if ($form->isValid()) {
             $object = $form->save();
-
-            $this->redirect(array('sf_route' => 'project_edit', 'sf_subject' => $object));
+            $redirectTo = array('sf_route' => 'project_edit', 'sf_subject' => $object);
+            if ($request->getParameter('save_and_add')){
+                $redirectTo = '@project_new';
+            }
+            $this->redirect($redirectTo);
         }
     }
 
