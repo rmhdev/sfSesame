@@ -10,7 +10,8 @@
 class projectActions extends sfActions {
 
     public function executeNew(sfWebRequest $request) {
-        $this->form = $this->getForm();
+        $this->project = new Project();
+        $this->form = $this->getForm($this->project);
     }
     
     public function executeCreate(sfWebRequest $request) {

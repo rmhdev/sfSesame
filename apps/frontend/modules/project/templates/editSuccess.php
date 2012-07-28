@@ -1,4 +1,5 @@
-<?php /*include_partial('project/page_header', array('project' => $project));*/ ?>
+<?php /* @var $project Project */ ?>
+<?php include_partial('project/page_header', array('project' => $project)); ?>
 
 <div class="row">
     <div class="span12">
