@@ -50,7 +50,7 @@ $browser->info("5. A name with length between 3 and 50 is correct")->
         isError('company_id', 'required')->
     end()
 ;
-
+/* var $newProject Project */
 $company = $browser->findFirstCompanyOrderedByName('desc');
 $newProjectName = 'Project B ' . time();
 $data = $browser->getDataFormWithNameAndCompanyId($newProjectName, $company->getPrimaryKey());
@@ -118,5 +118,23 @@ $browser->
     end()->
     with('response')->begin()->
         isStatusCode(200)->
+    end()->
+
+    info('9.1. Buttons in the show action')->
+    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    info('9.1.1. Edit Button')->
+    click('Edit')->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        isParameter('action', 'edit')->
+        isParameter('id', $newProject->getPrimaryKey())->
+    end()->
+
+    call(sprintf('project/%s', $newProject->getPrimaryKey()))->
+    info('9.1.2. Back to list Button')->
+    click('Back to list')->
+    with('request')->begin()->
+        isParameter('module', 'project')->
+        isParameter('action', 'index')->
     end()
 ;

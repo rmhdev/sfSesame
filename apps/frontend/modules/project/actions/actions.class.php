@@ -46,7 +46,7 @@ class projectActions extends sfActions {
     }
 
     public function executeShow(sfWebRequest $request){
-
+        $this->project = $this->getRoute()->getObject();
     }
 
 }
